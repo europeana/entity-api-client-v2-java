@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,13 +18,12 @@
 
     <properties>
         <java.version>11</java.version>
-        <version.entityApi>0.6</version.entityApi>
-        <version.commonsApi>0.3.14-SNAPSHOT</version.commonsApi>
-        <version.log4j2>2.17.1</version.log4j2>
-        <version.entityManagementApi>0.6</version.entityManagementApi>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring-boot.version>2.6.3</spring-boot.version>
+        <version.commonsApi>0.3.14-SNAPSHOT</version.commonsApi>
+        <version.entityManagementApi>1.0.0-SNAPSHOT</version.entityManagementApi>
+        <version.log4j2>2.17.1</version.log4j2>
     </properties>
 
     <dependencyManagement>
@@ -42,8 +41,24 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europeana.api</groupId>
+            <artifactId>entity-management-definitions</artifactId>
+            <version>${version.entityManagementApi}</version>
+        </dependency>
+        <dependency>
             <groupId>eu.europeana.api.commons</groupId>
-            <artifactId>commons-web</artifactId>
+            <artifactId>commons-error</artifactId>
             <version>${version.commonsApi}</version>
         </dependency>
         <dependency>
@@ -56,7 +71,10 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.4.1</version>
+        </dependency>
     </dependencies>
-
-
 </project>

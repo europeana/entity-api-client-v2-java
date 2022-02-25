@@ -1,14 +1,12 @@
 # properties file
 **/entity-client.properties
-**/entity-client.user.properties
-
 
 #IntelliJ project files
 .idea
 *.iml
 
 # Maven
-*/target/**
+target/**
 
 # Temp files
 *~
