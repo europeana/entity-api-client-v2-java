@@ -66,8 +66,7 @@ public class EntityApiRestService {
 
     public List<Entity> retrieveEntityByUri(String uri) throws JSONException, UnsupportedEntityTypeException, AuthenticationException {
         String results = executeGet(EntityClientUtils.buildEntityResolveUrl(uri, wskey));
-        JSONObject jsonObject = new JSONObject(results);
-        return EntityClientUtils.getResolveResults(jsonObject);
+        return EntityClientUtils.getResolveResults(new JSONObject(results));
     }
 
 }
