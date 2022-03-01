@@ -9,7 +9,7 @@ public class EntityClientConfiguration {
 
     private static final Logger LOGGER = LogManager.getLogger(EntityClientConfiguration.class);
 
-    public static final String PROPERTIES_FILE = "/entity-client.properties.template";
+    public static final String PROPERTIES_FILE = "/entity-client.properties";
     public static final String API_KEY = "entity.api.key";
     public static final String ENTITY_API_URL = "entity.api.url";
     public static final String ENTITY_MANAGEMENT_URL = "entity.management.url";

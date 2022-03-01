@@ -1,6 +1,5 @@
 package eu.europeana.entity.client.utils;
 
-import eu.europeana.entity.client.model.Agent;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.*;
 import eu.europeana.entitymanagement.utils.EntityRecordUtils;
@@ -203,7 +202,7 @@ public class EntityClientUtils {
         Entity entity;
         switch (type) {
             case Agent:
-                entity = new Agent(); // TODO instantiate proper Agent class once deserialization issue is resolved
+                entity = new Agent();
             break;
             case Place:
                 entity = new Place();
