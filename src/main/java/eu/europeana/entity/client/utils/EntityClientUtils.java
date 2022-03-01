@@ -13,6 +13,7 @@ import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -21,8 +22,11 @@ public class EntityClientUtils {
     private static final Logger LOGGER = LogManager.getLogger(EntityClientUtils.class);
 
     public static final String BASE_URL = "http://data.europeana.eu";
-    public static final String SUGGEST_PATH = "/suggest";
-    public static final String RESOLVE_PATH = "/resolve";
+    public static final String HEADER_LOCATION = "location";
+
+    public static final String SUGGEST_PATH = "suggest";
+    public static final String RESOLVE_PATH = "resolve";
+    public static final String PATH_SEPERATOR = "/";
 
     public static final String TEXT = "text";
     public static final String WSKEY = "wskey";
@@ -56,7 +60,7 @@ public class EntityClientUtils {
         return uriBuilder -> {
             UriBuilder builder =
                     uriBuilder
-                            .path(SUGGEST_PATH)
+                            .path(PATH_SEPERATOR + SUGGEST_PATH)
                             .queryParam(WSKEY, wskey)
                             .queryParam(TEXT, text);
             if (language != null) {
@@ -88,7 +92,7 @@ public class EntityClientUtils {
         return uriBuilder -> {
             UriBuilder builder =
                     uriBuilder
-                            .path(RESOLVE_PATH)
+                            .path(PATH_SEPERATOR + RESOLVE_PATH)
                             .queryParam(URI, uri)
                             .queryParam(WSKEY, wsKey);
             return builder.build();
@@ -165,22 +169,19 @@ public class EntityClientUtils {
     }
 
     /**
-     * Returns List of entities with id and type fields from the resolve results
-     * @param jsonObject
+     * Returns List of entities from the resolve results
+     * @param entityId
      * @return
      * @throws JSONException
      * @throws UnsupportedEntityTypeException
      */
-    public static List<Entity> getResolveResults(JSONObject jsonObject) throws JSONException, UnsupportedEntityTypeException{
-        List<Entity> entities = new ArrayList<>();
-        if(jsonObject.has(ID) && jsonObject.has(TYPE)) {
-            Entity entity = getEntityClass(EntityTypes.getByEntityId(String.valueOf(jsonObject.get(ID))));
-            if (entity != null) {
-                entity.setEntityId(String.valueOf(jsonObject.get(ID)));
-                entities.add(entity);
-            }
+    public static List<Entity> getResolveResults(String entityId) throws UnsupportedEntityTypeException {
+        Entity entity = getEntityClass(EntityTypes.getByEntityId(entityId));
+        if(entity != null) {
+            entity.setEntityId(entityId);
+            return Collections.singletonList(entity);
         }
-        return entities;
+        return Collections.emptyList();
     }
 
     /**

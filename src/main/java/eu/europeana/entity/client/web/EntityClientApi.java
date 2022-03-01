@@ -1,14 +1,13 @@
 package eu.europeana.entity.client.web;
 
 import eu.europeana.api.commons.error.EuropeanaApiException;
-import eu.europeana.entity.client.exception.AuthenticationException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.codehaus.jettison.json.JSONException;
 
 import java.util.List;
 
-public interface WebEntityProtocolApi {
+public interface EntityClientApi {
 
     /**
      * This method returns entity suggestions depending on given text, algorithm, types, scope and language.
@@ -27,14 +26,13 @@ public interface WebEntityProtocolApi {
      * @return
      * @throws UnsupportedEntityTypeException
      */
-    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, AuthenticationException;
+    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, EuropeanaApiException;
 
     /**
      * Get Entity by Uri
      * @param uri
-     * @throws JSONException
      * @throws EuropeanaApiException
      * @throws UnsupportedEntityTypeException
      */
-    public List<Entity> getEntityByUri(String uri) throws JSONException, EuropeanaApiException, UnsupportedEntityTypeException;
+    public List<Entity> getEntityByUri(String uri) throws EuropeanaApiException, UnsupportedEntityTypeException;
 }

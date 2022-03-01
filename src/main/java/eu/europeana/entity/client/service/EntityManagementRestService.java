@@ -1,6 +1,7 @@
 package eu.europeana.entity.client.service;
 
 import eu.europeana.entity.client.exception.AuthenticationException;
+import eu.europeana.entity.client.exception.EntityNotFoundException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
@@ -33,6 +34,8 @@ public class EntityManagementRestService {
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
                             response -> response.bodyToMono(String.class).map(AuthenticationException::new))
+                    .onStatus(HttpStatus.NOT_FOUND :: equals,
+                            response -> response.bodyToMono(String.class).map(EntityNotFoundException::new))
                     .bodyToMono(clazz)
                     .block();
         } catch (Exception e) {
@@ -43,6 +46,9 @@ public class EntityManagementRestService {
             Throwable t = Exceptions.unwrap(e);
             if(t instanceof AuthenticationException) {
                 throw new AuthenticationException("User is not authorised to perform this action");
+            }
+            if (t instanceof EntityNotFoundException) {
+                return null;
             }
             // all other exception should be propagated
             throw e;
@@ -56,9 +62,8 @@ public class EntityManagementRestService {
    }
 
    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, AuthenticationException {
-        Entity entity = EntityClientUtils.getEntityClassById(entityId);
-        return executeGet(
+       return executeGet(
               EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey)
-              ,entity.getClass());
+              ,EntityClientUtils.getEntityClassById(entityId).getClass());
     }
 }
