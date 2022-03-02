@@ -10,14 +10,20 @@ public class EntityClientRequest {
     private String value;
     private String language;
     private String type;
-    private boolean textOrRef;
+    private boolean isReference;
     List<Entity> entities;
 
-    public EntityClientRequest(String value, String language, String type, boolean textOrRef) {
+    public EntityClientRequest(String value, String language, String type, boolean isReference) {
         this.value = value;
         this.language = language;
         this.type = type;
-        this.textOrRef = textOrRef;
+        this.isReference = isReference;
+    }
+
+    public EntityClientRequest(String value, String type, boolean isReference) {
+        this.value = value;
+        this.type = type;
+        this.isReference = isReference;
     }
 
     public String getValue() {
@@ -44,12 +50,12 @@ public class EntityClientRequest {
         this.type = type;
     }
 
-    public boolean isTextOrRef() {
-        return textOrRef;
+    public boolean isReference() {
+        return isReference;
     }
 
-    public void setTextOrRef(boolean textOrRef) {
-        this.textOrRef = textOrRef;
+    public void setReference(boolean reference) {
+        this.isReference = reference;
     }
 
     public List<Entity> getEntities() {
