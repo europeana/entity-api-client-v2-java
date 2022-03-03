@@ -1,10 +1,9 @@
 package eu.europeana.entity.client.service;
 
-import eu.europeana.entity.client.exception.AuthenticationException;
 import eu.europeana.entity.client.exception.EntityNotFoundException;
+import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
-import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,13 +21,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class EntityApiRestService {
+public class EntityApiRestClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(EntityApiRestService.class);
+    private static final Logger LOGGER = LogManager.getLogger(EntityApiRestClient.class);
     private final WebClient webClient;
     private final String wskey;
 
-    public EntityApiRestService(WebClient webClient, String wskey) {
+    public EntityApiRestClient(WebClient webClient, String wskey) {
         this.webClient = webClient;
         this.wskey = wskey;
     }
@@ -38,9 +37,9 @@ public class EntityApiRestService {
      * @param getLocationHeader  if we want to fetch only the response header 'location' value
      *                        This is done to avoid the redirect issues and for directly fetching the entity Id
      * @return
-     * @throws AuthenticationException
+     * @throws TechnicalRuntimeException
      */
-    private String executeGet(Function<UriBuilder, URI> uriBuilderURIFunction, boolean getLocationHeader) throws AuthenticationException {
+    private String executeGet(Function<UriBuilder, URI> uriBuilderURIFunction, boolean getLocationHeader) throws TechnicalRuntimeException {
         try {
             WebClient.ResponseSpec result = webClient
                     .get()
@@ -49,7 +48,7 @@ public class EntityApiRestService {
                     .retrieve()
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(String.class).map(AuthenticationException::new))
+                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new))
                     .onStatus(HttpStatus.NOT_FOUND :: equals,
                             response -> response.bodyToMono(String.class).map(EntityNotFoundException::new));
             if (getLocationHeader) {
@@ -67,8 +66,8 @@ public class EntityApiRestService {
              * So we need to unwrap the underlying exception, for it to be handled by callers of this method
              **/
             Throwable t = Exceptions.unwrap(e);
-            if (t instanceof AuthenticationException) {
-                throw new AuthenticationException("User is not authorised to perform this action");
+            if (t instanceof TechnicalRuntimeException) {
+                throw new TechnicalRuntimeException("User is not authorised to perform this action");
             }
             if (t instanceof EntityNotFoundException) {
                 return null;
@@ -78,8 +77,8 @@ public class EntityApiRestService {
         }
     }
 
-    public List<Entity> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
-            throws JSONException, UnsupportedEntityTypeException, AuthenticationException {
+    public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
+            throws JSONException, UnsupportedEntityTypeException, TechnicalRuntimeException {
         String results = executeGet(EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
         JSONObject jsonObject = new JSONObject(results);
         // process only if results are present
@@ -90,10 +89,10 @@ public class EntityApiRestService {
         return Collections.emptyList();
     }
 
-    public List<Entity> retrieveEntityByUri(String uri) throws UnsupportedEntityTypeException, AuthenticationException {
+    public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
         String entityId = executeGet(EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
         if(StringUtils.isNotEmpty(entityId)) {
-            return EntityClientUtils.getResolveResults(entityId);
+            return Collections.singletonList(entityId);
         }
         LOGGER.error("No entity found for resolve uri={}", uri);
         return Collections.emptyList();

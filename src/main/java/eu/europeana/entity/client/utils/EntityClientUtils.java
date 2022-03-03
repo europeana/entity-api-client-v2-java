@@ -4,6 +4,7 @@ import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTyp
 import eu.europeana.entitymanagement.definitions.model.*;
 import eu.europeana.entitymanagement.utils.EntityRecordUtils;
 import eu.europeana.entitymanagement.vocabulary.EntityTypes;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -13,7 +14,6 @@ import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -22,6 +22,8 @@ public class EntityClientUtils {
     private static final Logger LOGGER = LogManager.getLogger(EntityClientUtils.class);
 
     public static final String BASE_URL = "http://data.europeana.eu";
+    public static final String ENTITY_ID_BASE = "base";
+
     public static final String HEADER_LOCATION = "location";
 
     public static final String SUGGEST_PATH = "suggest";
@@ -124,7 +126,11 @@ public class EntityClientUtils {
      * @return
      */
     public static String getEntityRetrievalId(String id) {
-        return  "/" + EntityRecordUtils.getEntityRequestPathWithBase(id);
+        if(StringUtils.contains(id, ENTITY_ID_BASE)) {
+            return StringUtils.substringAfter(id, BASE_URL);
+        } else {
+            return  "/" + EntityRecordUtils.getEntityRequestPathWithBase(id);
+        }
     }
 
     /**
@@ -134,17 +140,13 @@ public class EntityClientUtils {
      * @throws JSONException
      * @throws UnsupportedEntityTypeException
      */
-    public static List<Entity> getSuggestResults(JSONObject jsonObject) throws JSONException, UnsupportedEntityTypeException{
-        List<Entity> entities = new ArrayList<>();
+    public static List<String> getSuggestResults(JSONObject jsonObject) throws JSONException{
+        List<String> entities = new ArrayList<>();
         JSONArray items = jsonObject.getJSONArray(ITEMS_FIELD);
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = (JSONObject) items.get(i);
             if (item.has(TYPE) && item.has(ID)) {
-                Entity entity = getEntityClass(EntityTypes.getByEntityId(String.valueOf(item.get(ID))));
-                if (entity != null) {
-                    entity.setEntityId(String.valueOf(item.get(ID)));
-                    entities.add(entity);
-                }
+                entities.add(String.valueOf(item.get(ID)));
             }
         }
         // fail-safe check
@@ -168,21 +170,6 @@ public class EntityClientUtils {
         return 0;
     }
 
-    /**
-     * Returns List of entities from the resolve results
-     * @param entityId
-     * @return
-     * @throws JSONException
-     * @throws UnsupportedEntityTypeException
-     */
-    public static List<Entity> getResolveResults(String entityId) throws UnsupportedEntityTypeException {
-        Entity entity = getEntityClass(EntityTypes.getByEntityId(entityId));
-        if(entity != null) {
-            entity.setEntityId(entityId);
-            return Collections.singletonList(entity);
-        }
-        return Collections.emptyList();
-    }
 
     /**
      * Returns the Entity class from an entityId

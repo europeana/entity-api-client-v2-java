@@ -20,6 +20,10 @@ public class EntityClientConfiguration {
         loadProperties(PROPERTIES_FILE);
     }
 
+    public EntityClientConfiguration(Properties properties) {
+        this.properties = properties;
+    }
+
     private Properties loadProperties(String propertiesFile) {
         try { properties = new Properties();
             properties.load(getClass().getResourceAsStream(propertiesFile));

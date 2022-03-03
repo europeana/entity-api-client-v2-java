@@ -2,31 +2,31 @@ package eu.europeana.entity.client;
 
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.config.WebClients;
-import eu.europeana.entity.client.service.EntityApiRestService;
-import eu.europeana.entity.client.service.EntityManagementRestService;
+import eu.europeana.entity.client.service.EntityApiRestClient;
+import eu.europeana.entity.client.service.EntityManagementRestClient;
 
 public abstract class BaseEntityApiClient {
 
     private final EntityClientConfiguration configuration;
     private final WebClients webClients;
-    private EntityApiRestService entityApiRestService;
-    private EntityManagementRestService entityManagementRestService;
+    private EntityApiRestClient entityApiRestClient;
+    private EntityManagementRestClient entityManagementRestClient;
 
-    public BaseEntityApiClient(EntityClientConfiguration configuration) {
+    protected BaseEntityApiClient(EntityClientConfiguration configuration) {
         this.configuration = configuration;
         this.webClients = new WebClients(this.configuration);
         init();
     }
 
-    public BaseEntityApiClient() {
+    protected BaseEntityApiClient() {
         this.configuration = new EntityClientConfiguration();
         this.webClients = new WebClients(this.configuration);
         init();
     }
 
     private void init() {
-        this.entityApiRestService = new EntityApiRestService(this.webClients.getEntityApiClient(), this.configuration.getApikey());
-        this.entityManagementRestService = new EntityManagementRestService(this.webClients.getEntityManagementClient(), this.configuration.getApikey());
+        this.entityApiRestClient = new EntityApiRestClient(this.webClients.getEntityApiClient(), this.configuration.getApikey());
+        this.entityManagementRestClient = new EntityManagementRestClient(this.webClients.getEntityManagementClient(), this.configuration.getApikey());
     }
 
     public EntityClientConfiguration getConfiguration() {
@@ -37,11 +37,11 @@ public abstract class BaseEntityApiClient {
         return webClients;
     }
 
-    public EntityApiRestService getEntityApiRestService() {
-        return entityApiRestService;
+    public EntityApiRestClient getEntityApiRestClient() {
+        return entityApiRestClient;
     }
 
-    public EntityManagementRestService getEntityManagementRestService() {
-        return entityManagementRestService;
+    public EntityManagementRestClient getEntityManagementRestClient() {
+        return entityManagementRestClient;
     }
 }

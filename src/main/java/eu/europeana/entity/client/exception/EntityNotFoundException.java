@@ -1,22 +1,12 @@
 package eu.europeana.entity.client.exception;
 
-import eu.europeana.api.commons.error.EuropeanaApiException;
-import org.springframework.http.HttpStatus;
+public class EntityNotFoundException extends RuntimeException {
 
-public class EntityNotFoundException extends EuropeanaApiException {
-
-    public EntityNotFoundException(String msg) {
-        super(msg);
+    public EntityNotFoundException(String message, Exception e) {
+        super(message, e);
     }
 
-    @Override
-    public HttpStatus getResponseStatus() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    public boolean doLogStacktrace() {
-        return false;
+    public EntityNotFoundException(String message) {
+        super(message);
     }
 }
-

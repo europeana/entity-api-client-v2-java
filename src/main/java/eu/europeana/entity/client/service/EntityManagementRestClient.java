@@ -1,7 +1,7 @@
 package eu.europeana.entity.client.service;
 
-import eu.europeana.entity.client.exception.AuthenticationException;
 import eu.europeana.entity.client.exception.EntityNotFoundException;
+import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
@@ -14,17 +14,17 @@ import reactor.core.Exceptions;
 import java.net.URI;
 import java.util.function.Function;
 
-public class EntityManagementRestService {
+public class EntityManagementRestClient {
 
     private final WebClient webClient;
     private final String wskey;
 
-    public EntityManagementRestService(WebClient webClient, String wskey) {
+    public EntityManagementRestClient(WebClient webClient, String wskey) {
         this.webClient = webClient;
         this.wskey = wskey;
     }
 
-    private Entity executeGet(Function<UriBuilder, URI> uriBuilderURIFunction, Class<? extends Entity> clazz) throws AuthenticationException {
+    private Entity executeGet(Function<UriBuilder, URI> uriBuilderURIFunction, Class<? extends Entity> clazz) throws TechnicalRuntimeException {
         try {
             return webClient
                     .get()
@@ -33,7 +33,7 @@ public class EntityManagementRestService {
                     .retrieve()
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(String.class).map(AuthenticationException::new))
+                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new))
                     .onStatus(HttpStatus.NOT_FOUND :: equals,
                             response -> response.bodyToMono(String.class).map(EntityNotFoundException::new))
                     .bodyToMono(clazz)
@@ -44,8 +44,8 @@ public class EntityManagementRestService {
              * So we need to unwrap the underlying exception, for it to be handled by callers of this method
              **/
             Throwable t = Exceptions.unwrap(e);
-            if(t instanceof AuthenticationException) {
-                throw new AuthenticationException("User is not authorised to perform this action");
+            if(t instanceof TechnicalRuntimeException) {
+                throw new TechnicalRuntimeException("User is not authorised to perform this action");
             }
             if (t instanceof EntityNotFoundException) {
                 return null;
@@ -55,13 +55,7 @@ public class EntityManagementRestService {
         }
     }
 
-   public Entity getEntity(Entity entity) throws AuthenticationException {
-        return executeGet(
-                EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entity.getEntityId()), wskey)
-                ,entity.getClass());
-   }
-
-   public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, AuthenticationException {
+   public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, TechnicalRuntimeException {
        return executeGet(
               EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey)
               ,EntityClientUtils.getEntityClassById(entityId).getClass());

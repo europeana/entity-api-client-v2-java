@@ -1,6 +1,6 @@
 package eu.europeana.entity.client.web;
 
-import eu.europeana.api.commons.error.EuropeanaApiException;
+import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.codehaus.jettison.json.JSONException;
@@ -18,7 +18,7 @@ public interface EntityClientApi {
      * @param rows
      * @param algorithm
      */
-    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JSONException, EuropeanaApiException, UnsupportedEntityTypeException;
+    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JSONException, UnsupportedEntityTypeException;
 
     /**
      * Get Entity by EntityId
@@ -26,13 +26,12 @@ public interface EntityClientApi {
      * @return
      * @throws UnsupportedEntityTypeException
      */
-    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException, EuropeanaApiException;
+    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException;
 
     /**
      * Get Entity by Uri
      * @param uri
-     * @throws EuropeanaApiException
      * @throws UnsupportedEntityTypeException
      */
-    public List<Entity> getEntityByUri(String uri) throws EuropeanaApiException, UnsupportedEntityTypeException;
+    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException, UnsupportedEntityTypeException;
 }
