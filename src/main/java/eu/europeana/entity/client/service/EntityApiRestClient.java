@@ -3,7 +3,6 @@ package eu.europeana.entity.client.service;
 import eu.europeana.entity.client.exception.EntityNotFoundException;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
-import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,12 +77,14 @@ public class EntityApiRestClient {
     }
 
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
-            throws JSONException, UnsupportedEntityTypeException, TechnicalRuntimeException {
+            throws JSONException, TechnicalRuntimeException {
         String results = executeGet(EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
         JSONObject jsonObject = new JSONObject(results);
         // process only if results are present
         if (EntityClientUtils.getTotalValue(jsonObject) > 0) {
-            return EntityClientUtils.getSuggestResults(jsonObject);
+            List<String> entities = EntityClientUtils.getSuggestResults(jsonObject);
+            LOGGER.info("{} entities found for suggest text={}, lang={}, type={}", entities.size(), text, language, type);
+            return entities;
         }
         LOGGER.error("No entity found for suggest text={}, lang={}, type={}", text, language, type);
         return Collections.emptyList();
@@ -92,6 +93,7 @@ public class EntityApiRestClient {
     public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
         String entityId = executeGet(EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
         if(StringUtils.isNotEmpty(entityId)) {
+            LOGGER.info("{} entity found for uri={} ", entityId, uri);
             return Collections.singletonList(entityId);
         }
         LOGGER.error("No entity found for resolve uri={}", uri);
