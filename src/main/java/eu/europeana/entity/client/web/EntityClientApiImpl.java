@@ -1,11 +1,11 @@
 package eu.europeana.entity.client.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europeana.entity.client.BaseEntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
-import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
 
     @Override
     public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
-            throws JSONException, UnsupportedEntityTypeException, TechnicalRuntimeException {
+            throws JsonProcessingException, UnsupportedEntityTypeException, TechnicalRuntimeException {
         List<String> suggestResults = getEntityApiRestClient().retrieveSuggestions(text, language, scope, type, rows, algorithm);
         return getMetadata(suggestResults);
     }

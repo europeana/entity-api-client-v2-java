@@ -1,9 +1,9 @@
 package eu.europeana.entity.client.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
-import org.codehaus.jettison.json.JSONException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface EntityClientApi {
      * @param rows
      * @param algorithm
      */
-    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JSONException, UnsupportedEntityTypeException;
+    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws UnsupportedEntityTypeException, JsonProcessingException;
 
     /**
      * Get Entity by EntityId

@@ -1,40 +1,53 @@
 package eu.europeana.entity.client;
 
 import eu.europeana.entity.client.config.EntityClientConfiguration;
-import eu.europeana.entity.client.config.WebClients;
 import eu.europeana.entity.client.service.EntityApiRestClient;
 import eu.europeana.entity.client.service.EntityManagementRestClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
-public abstract class BaseEntityApiClient {
+public class BaseEntityApiClient {
+
+    private static final Logger LOG = LogManager.getLogger(BaseEntityApiClient.class);
+    private static final int maxInMemSizeMb = 10;
 
     private final EntityClientConfiguration configuration;
-    private final WebClients webClients;
     private EntityApiRestClient entityApiRestClient;
     private EntityManagementRestClient entityManagementRestClient;
 
     protected BaseEntityApiClient(EntityClientConfiguration configuration) {
         this.configuration = configuration;
-        this.webClients = new WebClients(this.configuration);
-        init();
-    }
+        this.entityApiRestClient = new EntityApiRestClient(getApiClient(this.configuration.getEntityApiUrl()), this.configuration.getApikey());
+        this.entityManagementRestClient = new EntityManagementRestClient(getApiClient(this.configuration.getEntityManagementUrl()), this.configuration.getApikey());    }
 
     protected BaseEntityApiClient() {
-        this.configuration = new EntityClientConfiguration();
-        this.webClients = new WebClients(this.configuration);
-        init();
+        this(new EntityClientConfiguration());
     }
 
-    private void init() {
-        this.entityApiRestClient = new EntityApiRestClient(this.webClients.getEntityApiClient(), this.configuration.getApikey());
-        this.entityManagementRestClient = new EntityManagementRestClient(this.webClients.getEntityManagementClient(), this.configuration.getApikey());
+    private WebClient getApiClient(String apiEndpoint) {
+        return WebClient.builder()
+                .baseUrl(apiEndpoint)
+                .filter(logRequest())
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(maxInMemSizeMb * 1024 * 1024))
+                        .build())
+                .build();
+    }
+
+    private ExchangeFilterFunction logRequest() {
+        return (clientRequest, next) -> {
+            LOG.debug("Request: {} {}", clientRequest.method(), clientRequest.url());
+            return next.exchange(clientRequest);
+        };
     }
 
     public EntityClientConfiguration getConfiguration() {
         return configuration;
-    }
-
-    public WebClients getWebClients() {
-        return webClients;
     }
 
     public EntityApiRestClient getEntityApiRestClient() {
