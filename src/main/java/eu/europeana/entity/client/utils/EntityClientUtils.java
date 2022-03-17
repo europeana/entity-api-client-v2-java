@@ -140,45 +140,4 @@ public class EntityClientUtils extends EntityApiConstants {
         }
         return entities;
     }
-
-
-    /**
-     * Returns the Entity class from an entityId
-     * @param entityId
-     * @return
-     * @throws UnsupportedEntityTypeException
-     */
-    public static Entity getEntityClassById(String entityId) throws UnsupportedEntityTypeException {
-       return EntityClientUtils.getEntityClass(EntityTypes.getByEntityId(entityId));
-    }
-
-    /**
-     * Returns Entity class from an EntityTypes
-     * @param type
-     * @return
-     */
-    private static Entity getEntityClass(EntityTypes type) {
-        Entity entity;
-        switch (type) {
-            case Agent:
-                entity = new Agent();
-            break;
-            case Place:
-                entity = new Place();
-            break;
-            case Concept:
-                entity = new Concept();
-            break;
-            case TimeSpan:
-                entity = new TimeSpan();
-            break;
-            case Organization:
-                entity = new Organization();
-            break;
-            default:
-                entity = null;
-            break;
-        }
-        return entity;
-    }
 }

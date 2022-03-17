@@ -18,7 +18,7 @@ public interface EntityClientApi {
      * @param rows
      * @param algorithm
      */
-    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws UnsupportedEntityTypeException, JsonProcessingException;
+    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JsonProcessingException;
 
     /**
      * Get Entity by EntityId
@@ -26,12 +26,12 @@ public interface EntityClientApi {
      * @return
      * @throws UnsupportedEntityTypeException
      */
-    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException;
+    public Entity getEntityById(String entityId);
 
     /**
      * Get Entity by Uri
      * @param uri
      * @throws UnsupportedEntityTypeException
      */
-    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException, UnsupportedEntityTypeException;
+    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException;
 }

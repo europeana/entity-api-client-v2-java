@@ -20,23 +20,23 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
 
     @Override
     public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
-            throws JsonProcessingException, UnsupportedEntityTypeException, TechnicalRuntimeException {
+            throws JsonProcessingException, TechnicalRuntimeException {
         List<String> suggestResults = getEntityApiRestClient().retrieveSuggestions(text, language, scope, type, rows, algorithm);
         return getMetadata(suggestResults);
     }
 
     @Override
-    public Entity getEntityById(String entityId) throws UnsupportedEntityTypeException {
+    public Entity getEntityById(String entityId) {
         return getEntityManagementRestClient().getEntityById(entityId);
     }
 
     @Override
-    public List<Entity> getEntityByUri(String uri) throws UnsupportedEntityTypeException, TechnicalRuntimeException {
+    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException {
         List<String> resolveResults = getEntityApiRestClient().retrieveEntityByUri(uri);
         return getMetadata(resolveResults);
     }
 
-    private List<Entity> getMetadata(List<String> results) throws UnsupportedEntityTypeException, TechnicalRuntimeException {
+    private List<Entity> getMetadata(List<String> results) throws TechnicalRuntimeException {
         List<Entity> entities = new ArrayList<>();
         if (!results.isEmpty()) {
             for (String entityId : results) {
