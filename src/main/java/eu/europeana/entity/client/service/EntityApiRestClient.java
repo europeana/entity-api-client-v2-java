@@ -30,22 +30,9 @@ public class EntityApiRestClient extends RestClient {
         this.wskey = wskey;
     }
 
-    private String getEntityIds(Function<UriBuilder, URI> uriBuilderURIFunction, boolean getLocationHeader) throws TechnicalRuntimeException {
-        WebClient.ResponseSpec result = executeGet(webClient, uriBuilderURIFunction);
-        if (getLocationHeader) {
-            return result.toBodilessEntity()
-                    .flatMap(voidResponseEntity ->
-                            Mono.justOrEmpty(voidResponseEntity.getHeaders().getFirst(EntityClientUtils.HEADER_LOCATION)))
-                    .block();
-        }
-        return result
-                .bodyToMono(String.class)
-                .block();
-    }
-
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
             throws JsonProcessingException, TechnicalRuntimeException {
-        String results = getEntityIds(EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
+        String results = getEntityIds(webClient, EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
         List<String> entities = EntityClientUtils.getSuggestResults(results);
         if (entities.isEmpty()) {
             LOGGER.debug("No entity found for suggest text={}, lang={}, type={}", text, language, type);
@@ -55,7 +42,7 @@ public class EntityApiRestClient extends RestClient {
     }
 
     public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
-        String entityId = getEntityIds(EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
+        String entityId = getEntityIds(webClient, EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
         if(StringUtils.isNotEmpty(entityId)) {
             LOGGER.debug("{} entity found for uri={} ", entityId, uri);
             return Collections.singletonList(entityId);

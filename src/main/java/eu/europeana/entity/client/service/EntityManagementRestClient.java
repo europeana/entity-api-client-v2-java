@@ -4,10 +4,6 @@ import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
-
-import java.net.URI;
-import java.util.function.Function;
 
 public class EntityManagementRestClient extends RestClient {
 
@@ -19,12 +15,8 @@ public class EntityManagementRestClient extends RestClient {
         this.wskey = wskey;
     }
 
-    private Entity getEntity(Function<UriBuilder, URI> uriBuilderURIFunction) throws TechnicalRuntimeException {
-        return executeGet(webClient, uriBuilderURIFunction).bodyToMono(Entity.class).block();
-    }
-
    public Entity getEntityById(String entityId) throws TechnicalRuntimeException {
-       return getEntity(
+      return getEntity(webClient,
               EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey));
     }
 }
