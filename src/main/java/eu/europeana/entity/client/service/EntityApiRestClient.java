@@ -1,23 +1,15 @@
 package eu.europeana.entity.client.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.europeana.entity.client.exception.EntityNotFoundException;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
-import reactor.core.Exceptions;
-import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 public class EntityApiRestClient extends RestClient {
 
@@ -32,7 +24,7 @@ public class EntityApiRestClient extends RestClient {
 
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
             throws JsonProcessingException, TechnicalRuntimeException {
-        String results = getEntityIds(webClient, EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
+        String results = getResults(webClient, EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false, false);
         List<String> entities = EntityClientUtils.getSuggestResults(results);
         if (entities.isEmpty()) {
             LOGGER.debug("No entity found for suggest text={}, lang={}, type={}", text, language, type);
@@ -42,7 +34,7 @@ public class EntityApiRestClient extends RestClient {
     }
 
     public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
-        String entityId = getEntityIds(webClient, EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
+        String entityId = getResults(webClient, EntityClientUtils.buildEntityResolveUrl(uri, wskey), false, true);
         if(StringUtils.isNotEmpty(entityId)) {
             LOGGER.debug("{} entity found for uri={} ", entityId, uri);
             return Collections.singletonList(entityId);

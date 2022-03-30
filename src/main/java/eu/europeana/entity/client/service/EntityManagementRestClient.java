@@ -16,7 +16,7 @@ public class EntityManagementRestClient extends RestClient {
     }
 
    public Entity getEntityById(String entityId) throws TechnicalRuntimeException {
-      return getEntity(webClient,
-              EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey));
+      return getResults(webClient,
+              EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey), true, false);
     }
 }

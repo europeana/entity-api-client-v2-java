@@ -16,39 +16,38 @@ import java.util.function.Function;
 
 public class RestClient {
 
-    public String getEntityIds(WebClient webClient, Function<UriBuilder, URI> uriBuilderURIFunction, boolean getLocationHeader) throws TechnicalRuntimeException {
+    /**
+     * Methods returns the desired results
+     * If getEntity is true, returns the EM Model Entity class
+     * Else, checks :
+     *         if getLocationHeader is true , 'location' header value
+     *              which is the non-redirect url for existing Entity (entity ID)
+     *         if getLocationHeader is false, returns the String json response
+     *
+     * @param webClient
+     * @param uriBuilderURIFunction
+     * @param getEntity
+     * @param getLocationHeader
+     * @param <T>
+     * @return
+     * @throws TechnicalRuntimeException
+     */
+    public <T> T getResults(WebClient webClient, Function<UriBuilder, URI> uriBuilderURIFunction, boolean getEntity, boolean getLocationHeader) throws TechnicalRuntimeException {
         try {
              WebClient.ResponseSpec result = executeGet(webClient, uriBuilderURIFunction);
-             if (getLocationHeader) {
-                return result.toBodilessEntity()
-                        .flatMap(voidResponseEntity ->
-                                Mono.justOrEmpty(voidResponseEntity.getHeaders().getFirst(EntityApiConstants.HEADER_LOCATION)))
-                        .block();
-            }
-            return result
-                    .bodyToMono(String.class)
-                    .block();
-        } catch (Exception e) {
-            /*
-             * Spring WebFlux wraps exceptions in ReactiveError (see Exceptions.propagate())
-             * So we need to unwrap the underlying exception, for it to be handled by callers of this method
-             **/
-            Throwable t = Exceptions.unwrap(e);
-            if (t instanceof TechnicalRuntimeException) {
-                throw new TechnicalRuntimeException("User is not authorised to perform this action");
-            }
-            if (t instanceof EntityNotFoundException) {
-                return null;
-            }
-            // all other exception should be propagated
-            throw e;
-        }
-    }
-
-    public Entity getEntity(WebClient webClient, Function<UriBuilder, URI> uriBuilderURIFunction) throws TechnicalRuntimeException {
-        try {
-            WebClient.ResponseSpec result = executeGet(webClient, uriBuilderURIFunction);
-            return result.bodyToMono(Entity.class).block();
+             if (getEntity) {
+                 return (T) result.bodyToMono(Entity.class).block();
+             } else {
+                 if (getLocationHeader) {
+                     return (T) result.toBodilessEntity()
+                             .flatMap(voidResponseEntity ->
+                                     Mono.justOrEmpty(voidResponseEntity.getHeaders().getFirst(EntityApiConstants.HEADER_LOCATION)))
+                             .block();
+                 }
+                 return (T) result
+                         .bodyToMono(String.class)
+                         .block();
+             }
         } catch (Exception e) {
             /*
              * Spring WebFlux wraps exceptions in ReactiveError (see Exceptions.propagate())
