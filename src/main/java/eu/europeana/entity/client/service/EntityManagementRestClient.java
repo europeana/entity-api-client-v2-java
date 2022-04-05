@@ -1,9 +1,12 @@
 package eu.europeana.entity.client.service;
 
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
+import eu.europeana.entity.client.model.EntityRetrievalResponse;
 import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 public class EntityManagementRestClient extends RestClient {
 
@@ -15,8 +18,28 @@ public class EntityManagementRestClient extends RestClient {
         this.wskey = wskey;
     }
 
+    /**
+     * Returns the Entity matching the entity id
+     * This method executes the entity Retrieval method of EM.
+     * @param entityId
+     * @return
+     * @throws TechnicalRuntimeException
+     */
    public Entity getEntityById(String entityId) throws TechnicalRuntimeException {
-      return getResults(webClient,
+      return getEntityResults(webClient,
               EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey), true, false);
+    }
+
+    /**
+     * Returns the Entities matching the entity ids.
+     * This method executes the Multiple entity Retrieval method of EM.
+     * @param entityIds
+     * @return
+     * @throws TechnicalRuntimeException
+     */
+    public List<Entity> getEntityByIds(List<String> entityIds) throws TechnicalRuntimeException {
+        EntityRetrievalResponse result = postEntityResults(webClient,
+                EntityClientUtils.buildMultipleEntityRetrievalUrl(wskey), entityIds.toString());
+        return result.getEntities();
     }
 }

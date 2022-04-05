@@ -81,7 +81,7 @@ public class EntityClientUtils extends EntityApiConstants {
     }
 
     /**
-     * Builds the Entity management retrieval url
+     * Builds the Entity management entity retrieval url
      * @param id
      * @param wsKey
      * @return
@@ -96,6 +96,20 @@ public class EntityClientUtils extends EntityApiConstants {
         };
     }
 
+    /**
+     * Builds the Entity management multiple entity retrieval url
+     * @param wsKey
+     * @return
+     */
+    public static Function<UriBuilder, URI> buildMultipleEntityRetrievalUrl(String wsKey) {
+        return uriBuilder -> {
+            UriBuilder builder =
+                    uriBuilder
+                            .path(PATH_SEPERATOR + MULTIPLE_ENTITY_RETRIEVAL_PATH)
+                            .queryParam(WSKEY, wsKey);
+            return builder.build();
+        };
+    }
 
     /**
      * Builds the Entity retrieval url from entityId
@@ -127,7 +141,7 @@ public class EntityClientUtils extends EntityApiConstants {
             if (node.has(ITEMS_FIELD)) {
                 Iterator<JsonNode> iterator = node.get(ITEMS_FIELD).iterator();
                 while (iterator.hasNext()) {
-                    entities.add(StringUtils.remove(String.valueOf(iterator.next().get(ID)), '\"'));
+                        entities.add(String.valueOf(iterator.next().get(ID)));
                 }
             }
             // fail-safe check
