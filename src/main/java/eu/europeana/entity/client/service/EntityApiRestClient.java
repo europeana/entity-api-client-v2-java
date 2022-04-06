@@ -24,8 +24,8 @@ public class EntityApiRestClient extends RestClient {
 
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
             throws JsonProcessingException, TechnicalRuntimeException {
-        String results = getEntityResults(webClient,
-                EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false, false);
+        String results = getEntityId(webClient,
+                EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
         List<String> entities = EntityClientUtils.getSuggestResults(results);
         if (entities.isEmpty()) {
             LOGGER.debug("No entity found for suggest text={}, lang={}, type={}", text, language, type);
@@ -35,8 +35,8 @@ public class EntityApiRestClient extends RestClient {
     }
 
     public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
-        String entityId = getEntityResults(webClient,
-                EntityClientUtils.buildEntityResolveUrl(uri, wskey), false, true);
+        String entityId = getEntityId(webClient,
+                EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
         if(StringUtils.isNotEmpty(entityId)) {
             LOGGER.debug("{} entity found for uri={} ", entityId, uri);
             return Collections.singletonList("\"" + entityId + "\"");

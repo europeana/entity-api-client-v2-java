@@ -26,8 +26,8 @@ public class EntityManagementRestClient extends RestClient {
      * @throws TechnicalRuntimeException
      */
    public Entity getEntityById(String entityId) throws TechnicalRuntimeException {
-      return getEntityResults(webClient,
-              EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey), true, false);
+      return getEntities(webClient,
+              EntityClientUtils.buildEntityRetrievalUrl(EntityClientUtils.getEntityRetrievalId(entityId), wskey), null);
     }
 
     /**
@@ -38,7 +38,7 @@ public class EntityManagementRestClient extends RestClient {
      * @throws TechnicalRuntimeException
      */
     public List<Entity> getEntityByIds(List<String> entityIds) throws TechnicalRuntimeException {
-        EntityRetrievalResponse result = postEntityResults(webClient,
+        EntityRetrievalResponse result = getEntities(webClient,
                 EntityClientUtils.buildMultipleEntityRetrievalUrl(wskey), entityIds.toString());
         return result.getEntities();
     }
