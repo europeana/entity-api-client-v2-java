@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europeana.entity.client.BaseEntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
-import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 
 import java.util.ArrayList;
@@ -39,9 +38,7 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
     private List<Entity> getMetadata(List<String> results) throws TechnicalRuntimeException {
         List<Entity> entities = new ArrayList<>();
         if (!results.isEmpty()) {
-            for (String entityId : results) {
-                entities.add(getEntityManagementRestClient().getEntityById(entityId));
-            }
+            entities = getEntityManagementRestClient().getEntityByIds(results);
             // fail-safe check
             if (entities.size() != results.size()) {
                 //This should never happen, But just to be sure.
