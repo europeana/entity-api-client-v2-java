@@ -21,6 +21,15 @@ public interface EntityClientApi {
     public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JsonProcessingException;
 
     /**
+     * This method returns entity enrichment depending on given text, types and language.
+     * @param text
+     * @param language
+     * @param type
+     * @param rows
+     */
+    public List<Entity> getEnrichment(String text, String language, String type, String rows) throws JsonProcessingException;
+
+    /**
      * Get Entity by EntityId
      * @param entityId
      * @return

@@ -26,7 +26,7 @@ public class EntityApiRestClient extends RestClient {
             throws JsonProcessingException, TechnicalRuntimeException {
         String results = getEntityId(webClient,
                 EntityClientUtils.buildSuggestUrl(text, language, scope, type, rows, algorithm, wskey), false);
-        List<String> entities = EntityClientUtils.getSuggestResults(results);
+        List<String> entities = EntityClientUtils.getEntityApiResults(results);
         if (entities.isEmpty()) {
             LOGGER.debug("No entity found for suggest text={}, lang={}, type={}", text, language, type);
         }
@@ -43,6 +43,18 @@ public class EntityApiRestClient extends RestClient {
         }
         LOGGER.debug("No entity found for resolve uri={}", uri);
         return Collections.emptyList();
+    }
+
+    public List<String> retrieveEnrichment(String text, String language, String type, String rows)
+            throws JsonProcessingException, TechnicalRuntimeException {
+        String results = getEntityId(webClient,
+                EntityClientUtils.buildEntityEnrichUrl(text, language, type, rows, wskey), false);
+        List<String> entities = EntityClientUtils.getEntityApiResults(results);
+        if (entities.isEmpty()) {
+            LOGGER.debug("No entity found for enrich text={}, lang={}, type={}", text, language, type);
+        }
+        LOGGER.debug("{} entities found for enrich text={}, lang={}, type={}", entities.size(), text, language, type);
+        return entities;
     }
 
 }

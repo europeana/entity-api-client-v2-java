@@ -63,6 +63,27 @@ public class EntityClientUtils extends EntityApiConstants {
         };
     }
 
+    public static Function<UriBuilder, URI> buildEntityEnrichUrl(String text, String language, String type, String rows, String wskey) {
+        return uriBuilder -> {
+            UriBuilder builder =
+                    uriBuilder
+                            .path(PATH_SEPERATOR + ENRICH_PATH)
+                            .queryParam(WSKEY, wskey)
+                            .queryParam(TEXT, text);
+            if (language != null) {
+                builder.queryParam(LANGUAGE, language);
+            }
+            if (type != null) {
+                builder.queryParam(TYPE, type);
+            }
+            if (rows != null) {
+                builder.queryParam(ROWS, rows);
+            }
+            return builder.build();
+        };
+    }
+
+
     /**
      * Builds the Entity Api resolve url
      * @param uri
@@ -127,13 +148,13 @@ public class EntityClientUtils extends EntityApiConstants {
     }
 
     /**
-     * Returns List of entities with id and type fields from the suggest results
+     * Returns List of ids from suggest results
      * @param json
      * @return
      * @throws JsonProcessingException
      * @throws UnsupportedEntityTypeException
      */
-    public static List<String> getSuggestResults(String json) throws JsonProcessingException {
+    public static List<String> getEntityApiResults(String json) throws JsonProcessingException {
         List<String> entities = new ArrayList<>();
         ObjectNode node = mapper.readValue(json, ObjectNode.class);
         int total = node.has(TOTAL) ? Integer.parseInt(String.valueOf(node.get(TOTAL))) : 0;
