@@ -5,6 +5,7 @@ import eu.europeana.entity.client.BaseEntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,12 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
     }
 
     @Override
+    public List<Entity> getEnrichment(String text, String language, String type, String rows) throws JsonProcessingException {
+        List<String> enrichResults = getEntityApiRestClient().retrieveEnrichment(text, language, type, rows);
+        return getMetadata(enrichResults);
+    }
+
+    @Override
     public Entity getEntityById(String entityId) {
         return getEntityManagementRestClient().getEntityById(entityId);
     }
@@ -38,7 +45,12 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
     private List<Entity> getMetadata(List<String> results) throws TechnicalRuntimeException {
         List<Entity> entities = new ArrayList<>();
         if (!results.isEmpty()) {
-            entities = getEntityManagementRestClient().getEntityByIds(results);
+            // if only one entity, execute single entity retrieval method. Otherwise, multiple entity retrieval
+            if (results.size() == 1) {
+                entities.add(getEntityManagementRestClient().getEntityById(StringUtils.remove(results.get(0), "\"")));
+            } else {
+                entities = getEntityManagementRestClient().getEntityByIds(results);
+            }
             // fail-safe check
             if (entities.size() != results.size()) {
                 //This should never happen, But just to be sure.

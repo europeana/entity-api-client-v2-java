@@ -6,13 +6,41 @@ import java.util.List;
 
 public class EntityRetrievalResponse {
 
-    private List<Entity> entities;
+    private String context;
+    private String type;
+    private long total;
 
-    public List<Entity> getEntities() {
-        return entities;
+    private List<Entity> items;
+
+    public String getContext() {
+        return context;
     }
 
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    public List<Entity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Entity> items) {
+        this.items = items;
     }
 }

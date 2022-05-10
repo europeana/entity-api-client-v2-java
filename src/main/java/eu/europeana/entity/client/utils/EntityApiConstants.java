@@ -8,6 +8,7 @@ public class EntityApiConstants {
     public static final String HEADER_LOCATION = "location";
 
     public static final String SUGGEST_PATH = "suggest";
+    public static final String ENRICH_PATH = "enrich";
     public static final String RESOLVE_PATH = "resolve";
     public static final String MULTIPLE_ENTITY_RETRIEVAL_PATH = "retrieve";
     public static final String PATH_SEPERATOR = "/";
