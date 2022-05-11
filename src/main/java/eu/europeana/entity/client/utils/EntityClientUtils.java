@@ -156,19 +156,21 @@ public class EntityClientUtils extends EntityApiConstants {
      */
     public static List<String> getEntityApiResults(String json) throws JsonProcessingException {
         List<String> entities = new ArrayList<>();
-        ObjectNode node = mapper.readValue(json, ObjectNode.class);
-        int total = node.has(TOTAL) ? Integer.parseInt(String.valueOf(node.get(TOTAL))) : 0;
-        if (total > 0) {
-            if (node.has(ITEMS_FIELD)) {
-                Iterator<JsonNode> iterator = node.get(ITEMS_FIELD).iterator();
-                while (iterator.hasNext()) {
+        if (!StringUtils.isEmpty(json)) {
+            ObjectNode node = mapper.readValue(json, ObjectNode.class);
+            int total = node.has(TOTAL) ? Integer.parseInt(String.valueOf(node.get(TOTAL))) : 0;
+            if (total > 0) {
+                if (node.has(ITEMS_FIELD)) {
+                    Iterator<JsonNode> iterator = node.get(ITEMS_FIELD).iterator();
+                    while (iterator.hasNext()) {
                         entities.add(String.valueOf(iterator.next().get(ID)));
+                    }
                 }
-            }
-            // fail-safe check
-            if (total != entities.size()) {
-                LOGGER.debug("Mismatch while parsing the suggest results. Entities in suggest Results = {}, Entities collected={}",
-                        total, entities.size());
+                // fail-safe check
+                if (total != entities.size()) {
+                    LOGGER.debug("Mismatch while parsing the suggest results. Entities in suggest Results = {}, Entities collected={}",
+                            total, entities.size());
+                }
             }
         }
         return entities;
