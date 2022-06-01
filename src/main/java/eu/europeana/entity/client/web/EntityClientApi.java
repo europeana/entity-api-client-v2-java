@@ -23,11 +23,11 @@ public interface EntityClientApi {
     /**
      * This method returns entity enrichment depending on given text, types and language.
      * @param text
-     * @param language
+     * @param lang
      * @param type
      * @param rows
      */
-    public List<Entity> getEnrichment(String text, String language, String type, String rows) throws JsonProcessingException;
+    public List<Entity> getEnrichment(String text, String lang, String type, String rows) throws JsonProcessingException;
 
     /**
      * Get Entity by EntityId

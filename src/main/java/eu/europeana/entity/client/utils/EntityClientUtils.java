@@ -63,15 +63,15 @@ public class EntityClientUtils extends EntityApiConstants {
         };
     }
 
-    public static Function<UriBuilder, URI> buildEntityEnrichUrl(String text, String language, String type, String rows, String wskey) {
+    public static Function<UriBuilder, URI> buildEntityEnrichUrl(String text, String lang, String type, String rows, String wskey) {
         return uriBuilder -> {
             UriBuilder builder =
                     uriBuilder
                             .path(PATH_SEPERATOR + ENRICH_PATH)
                             .queryParam(WSKEY, wskey)
                             .queryParam(TEXT, text);
-            if (language != null) {
-                builder.queryParam(LANGUAGE, language);
+            if (lang != null) {
+                builder.queryParam(LANG, lang);
             }
             if (type != null) {
                 builder.queryParam(TYPE, type);

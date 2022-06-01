@@ -15,7 +15,9 @@ public class EntityApiConstants {
 
     public static final String TEXT = "text";
     public static final String WSKEY = "wskey";
+    public static final String LANG = "lang";
     public static final String LANGUAGE = "language";
+
     public static final String SCOPE = "scope";
     public static final String ROWS = "rows";
     public static final String ALGORITHM = "algorithm";

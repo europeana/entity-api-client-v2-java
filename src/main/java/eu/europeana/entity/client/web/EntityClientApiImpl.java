@@ -26,8 +26,8 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
     }
 
     @Override
-    public List<Entity> getEnrichment(String text, String language, String type, String rows) throws JsonProcessingException {
-        List<String> enrichResults = getEntityApiRestClient().retrieveEnrichment(text, language, type, rows);
+    public List<Entity> getEnrichment(String text, String lang, String type, String rows) throws JsonProcessingException {
+        List<String> enrichResults = getEntityApiRestClient().retrieveEnrichment(text, lang, type, rows);
         return getMetadata(enrichResults);
     }
 
