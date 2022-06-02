@@ -1,10 +1,11 @@
 package eu.europeana.entity.client.service;
 
-import eu.europeana.entity.client.exception.EntityNotFoundException;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.model.EntityRetrievalResponse;
 import eu.europeana.entity.client.utils.EntityApiConstants;
 import eu.europeana.entitymanagement.definitions.model.Entity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -17,6 +18,8 @@ import java.net.URI;
 import java.util.function.Function;
 
 public class RestClient {
+
+    private static final Logger LOGGER = LogManager.getLogger(RestClient.class);
 
     /**
      * Methods returns the desired results.
@@ -52,11 +55,9 @@ public class RestClient {
             if (t instanceof TechnicalRuntimeException) {
                 throw new TechnicalRuntimeException("User is not authorised to perform this action");
             }
-            if (t instanceof EntityNotFoundException) {
-                return null;
-            }
-            // all other exception should be propagated
-            throw e;
+            // all other exception should be logged and null response should be returned
+            LOGGER.debug("Entity API Client call failed - {}", e.getMessage());
+            return null ;
         }
     }
 
@@ -88,11 +89,9 @@ public class RestClient {
             if (t instanceof TechnicalRuntimeException) {
                 throw new TechnicalRuntimeException("User is not authorised to perform this action");
             }
-            if (t instanceof EntityNotFoundException) {
-                return null;
-            }
-            // all other exception should be propagated
-            throw e;
+            // all other exception should be logged and null response should be returned
+            LOGGER.debug("Entity Management Client call failed. {}", e.getMessage());
+            return null ;
         }
     }
 
@@ -104,9 +103,7 @@ public class RestClient {
                     .retrieve()
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new))
-                    .onStatus(HttpStatus.NOT_FOUND::equals,
-                            response -> response.bodyToMono(String.class).map(EntityNotFoundException::new));
+                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new));
     }
 
     private WebClient.ResponseSpec executePost(WebClient webClient, Function<UriBuilder, URI> uriBuilderURIFunction, String jsonBody) throws TechnicalRuntimeException {
@@ -118,9 +115,7 @@ public class RestClient {
                 .retrieve()
                 .onStatus(
                         HttpStatus.UNAUTHORIZED::equals,
-                        response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new))
-                .onStatus(HttpStatus.NOT_FOUND::equals,
-                        response -> response.bodyToMono(String.class).map(EntityNotFoundException::new));
+                        response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new));
 
     }
 }
