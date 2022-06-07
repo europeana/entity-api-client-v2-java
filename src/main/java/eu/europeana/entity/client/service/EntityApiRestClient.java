@@ -34,6 +34,15 @@ public class EntityApiRestClient extends RestClient {
         return entities;
     }
 
+    /**
+     * Returns the value present in location header.
+     * The endpoint returns either 301 (Moved Permanently) OR
+     *   300 (Multiple Choices) for a uri which returns more than one entity
+     * In both cases 'Location' response header value is picked up.
+     * @param uri
+     * @return
+     * @throws TechnicalRuntimeException
+     */
     public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
         String entityId = getEntityId(webClient,
                 EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
