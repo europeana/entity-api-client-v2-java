@@ -35,10 +35,12 @@ public class EntityApiRestClient extends RestClient {
     }
 
     /**
-     * Returns the value present in location header.
-     * The endpoint returns either 301 (Moved Permanently) OR
-     *   300 (Multiple Choices) for a uri which returns more than one entity
-     * In both cases 'Location' response header value is picked up.
+     * Returns the value present in location response header,
+     * if the endpoint returns 301 (Moved Permanently).
+     * Otherwise, if endpoint returns,
+     *   300 (Multiple Choices) for a uri ie; more than one entity for one uri,
+     *   empty list will be returned
+     *
      * @param uri
      * @return
      * @throws TechnicalRuntimeException

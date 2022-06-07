@@ -1,5 +1,6 @@
 package eu.europeana.entity.client.service;
 
+import eu.europeana.entity.client.exception.MultipleEntityFoundException;
 import eu.europeana.entity.client.exception.TechnicalRuntimeException;
 import eu.europeana.entity.client.model.EntityRetrievalResponse;
 import eu.europeana.entity.client.utils.EntityApiConstants;
@@ -55,6 +56,10 @@ public class RestClient {
             if (t instanceof TechnicalRuntimeException) {
                 throw new TechnicalRuntimeException("User is not authorised to perform this action");
             }
+            if (t instanceof MultipleEntityFoundException) {
+                LOGGER.debug("Multiple Entity found - {} ", e.getMessage());
+                return null ;
+            }
             // all other exception should be logged and null response should be returned
             LOGGER.debug("Entity API Client call failed - {}", e.getMessage());
             return null ;
@@ -103,7 +108,9 @@ public class RestClient {
                     .retrieve()
                     .onStatus(
                             HttpStatus.UNAUTHORIZED::equals,
-                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new));
+                            response -> response.bodyToMono(String.class).map(TechnicalRuntimeException::new))
+                    .onStatus(HttpStatus.MULTIPLE_CHOICES::equals,
+                            response -> response.bodyToMono(String.class).map(MultipleEntityFoundException::new));
     }
 
     private WebClient.ResponseSpec executePost(WebClient webClient, Function<UriBuilder, URI> uriBuilderURIFunction, String jsonBody) throws TechnicalRuntimeException {
