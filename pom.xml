@@ -20,7 +20,7 @@
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <version.entityManagementApi>1.0.0-SNAPSHOT</version.entityManagementApi>
+        <version.entityManagementApi>1.0.0</version.entityManagementApi>
     </properties>
 
     <dependencies>
