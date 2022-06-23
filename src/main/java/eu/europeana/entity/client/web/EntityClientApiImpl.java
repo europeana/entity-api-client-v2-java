@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityClientApiImpl extends BaseEntityApiClient implements EntityClientApi {
 
@@ -53,8 +54,9 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
             }
             // fail-safe check
             if (entities.size() != results.size()) {
+                List<String> retrievedEMEntities = entities.stream().map(Entity::getEntityId).collect(Collectors.toList());
                 //This should never happen, But just to be sure.
-                throw new TechnicalRuntimeException("Mismatch between entity Api v2 entities =" + results.size() + "  and EM entities=" + entities.size());
+                throw new TechnicalRuntimeException("Mismatch between entity Api v2 entities =" + results + "  and EM entities=" + retrievedEMEntities);
             }
         }
         return entities;
