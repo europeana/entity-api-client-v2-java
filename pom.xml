@@ -30,15 +30,20 @@
 
 
     <properties>
-        <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<!-- SG: NOTE: for newer maven compiler plugin only release version
+		should be required -->
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		
         <version.entityManagementApi>1.7</version.entityManagementApi>
         
         <jackson.version>2.12.6.1</jackson.version>
         <spring.webflux.version>5.3.20</spring.webflux.version>
 		<reactor.netty.http.version>1.0.19</reactor.netty.http.version>
-		<junit.jupiter.version>5.6.2</junit.jupiter.version>
+		<junit.jupiter.version>5.7.2</junit.jupiter.version>
 		
     </properties>
 
@@ -72,4 +77,16 @@
 			<version>${junit.jupiter.version}</version>
 		</dependency>
     </dependencies>
+    
+    <build>
+    	<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.plugin.version}</version>
+				</plugin>
+			</plugins>
+    	</pluginManagement>
+    </build>
 </project>
