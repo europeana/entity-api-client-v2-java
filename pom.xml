@@ -14,24 +14,43 @@
     <name>entity-api-client</name>
     <description>API for getting entities</description>
     <packaging>jar</packaging>
+    
+    <repositories>
+		<repository>
+			<id>libs-release-local</id>
+			<name>europeana-releases</name>
+			<url>https://artifactory.eanadev.org/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<id>libs-snapshots-local</id>
+			<name>europeana-snapshots</name>
+			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot</url>
+		</repository>
+	</repositories>
+
 
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <version.entityManagementApi>1.0</version.entityManagementApi>
+        <version.entityManagementApi>1.7</version.entityManagementApi>
+        
+        <jackson.version>2.12.6.1</jackson.version>
+        <spring.webflux.version>5.3.20</spring.webflux.version>
+		<reactor.netty.http.version>1.0.19</reactor.netty.http.version>
+		
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
-            <version>5.3.16</version>
+            <version>${spring.webflux.version}</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty-http</artifactId>
-            <version>1.0.16</version>
+            <version>${reactor.netty.http.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europeana.api</groupId>
@@ -41,7 +60,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.2</version>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 </project>
