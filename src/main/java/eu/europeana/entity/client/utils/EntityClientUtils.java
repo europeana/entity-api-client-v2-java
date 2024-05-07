@@ -135,16 +135,19 @@ public class EntityClientUtils extends EntityApiConstants {
     /**
      * Builds the Entity retrieval url from entityId
      * id : http://data.europeana.eu/<type>/<id>
-     * builds : /<type>/base/<id>
+     * extracts : /<type>/<id>
      * @param id
      * @return
      */
+    @Deprecated
     public static String getEntityRetrievalId(String id) {
-        if(StringUtils.contains(id, ENTITY_ID_BASE)) {
-            return StringUtils.substringAfter(id, BASE_URL);
-        } else {
-            return  "/" + EntityRecordUtils.getEntityRequestPathWithBase(id);
-        }
+       return StringUtils.substringAfter(id, BASE_URL);
+       //base not used anymore
+//        if(StringUtils.contains(id, ENTITY_ID_BASE)) {
+//            return StringUtils.substringAfter(id, BASE_URL);
+//        } else {
+//            return  "/" + EntityRecordUtils.getEntityRequestPathWithBase(id);
+//        }
     }
 
     /**
