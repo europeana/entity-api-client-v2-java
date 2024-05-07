@@ -38,6 +38,7 @@
         <jackson.version>2.12.6.1</jackson.version>
         <spring.webflux.version>5.3.20</spring.webflux.version>
 		<reactor.netty.http.version>1.0.19</reactor.netty.http.version>
+		<junit.jupiter.version>5.6.2</junit.jupiter.version>
 		
     </properties>
 
@@ -62,5 +63,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        
+        <!-- test -->
+        <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<version>${junit.jupiter.version}</version>
+		</dependency>
     </dependencies>
 </project>
