@@ -25,7 +25,7 @@ public class BaseEntityApiClient {
     this.entityApiRestClient = new EntityApiRestClient(getApiClient(this.configuration.getEntityApiUrl()),
         this.configuration.getApikey());
     this.entityManagementRestClient = new EntityManagementRestClient(
-        getApiManagementClient(this.configuration.getEntityManagementUrl()), this.configuration.getApikey());
+        getApiClient(this.configuration.getEntityManagementUrl()), this.configuration.getApikey());
   }
 
   protected BaseEntityApiClient() {
@@ -56,23 +56,10 @@ public class BaseEntityApiClient {
     return WebClient.builder()
                     .baseUrl(apiEndpoint)
                     .filter(logRequest())
+                    .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                                                                              .followRedirect(true)))
                     .exchangeStrategies(getExchangeStrategies())
                     .build();
-  }
-
-  private WebClient getApiManagementClient(String apiEndpoint) {
-    if (configuration.isEntityManagementRedirectEnabled()) {
-      return WebClient.builder()
-                      .baseUrl(apiEndpoint)
-                      .filter(logRequest())
-                      .clientConnector(
-                          new ReactorClientHttpConnector(HttpClient.create()
-                                                                   .followRedirect(true)))
-                      .exchangeStrategies(getExchangeStrategies())
-                      .build();
-    } else {
-      return getApiClient(apiEndpoint);
-    }
   }
 
   private ExchangeFilterFunction logRequest() {

@@ -1,9 +1,9 @@
 package eu.europeana.entity.client.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EntityClientConfiguration {
 
@@ -14,7 +14,6 @@ public class EntityClientConfiguration {
     public static final String ENTITY_API_URL = "entity.api.url";
     public static final String ENTITY_MANAGEMENT_URL = "entity.management.url";
 
-    private boolean entityManagementRedirectEnabled = false;
     Properties properties;
 
     public EntityClientConfiguration() {
@@ -48,13 +47,5 @@ public class EntityClientConfiguration {
 
     private String getProperty(String propertyName) {
         return properties.getProperty(propertyName);
-    }
-
-    public boolean isEntityManagementRedirectEnabled() {
-        return entityManagementRedirectEnabled;
-    }
-
-    public void setEntityManagementRedirectEnabled(boolean entityManagementRedirectEnabled) {
-        this.entityManagementRedirectEnabled = entityManagementRedirectEnabled;
     }
 }
