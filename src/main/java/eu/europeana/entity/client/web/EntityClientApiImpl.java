@@ -13,7 +13,10 @@ import java.util.stream.Collectors;
 
 public class EntityClientApiImpl extends BaseEntityApiClient implements EntityClientApi {
 
-    public EntityClientApiImpl() {}
+    public EntityClientApiImpl() {
+      this( new EntityClientConfiguration());
+    }
+    
 
     public EntityClientApiImpl(EntityClientConfiguration configuration) {
         super(configuration);
