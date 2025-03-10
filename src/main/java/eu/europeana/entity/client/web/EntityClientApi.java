@@ -6,7 +6,7 @@ import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTyp
 import eu.europeana.entitymanagement.definitions.model.Entity;
 
 import java.util.List;
-
+// get rename -  getentity , resolveentity, suggest entity, enrichEntity
 public interface EntityClientApi {
 
     /**
@@ -18,7 +18,7 @@ public interface EntityClientApi {
      * @param rows
      * @param algorithm
      */
-    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm) throws JsonProcessingException;
+    public List<Entity> suggestEntity(String text, String language, String scope, String type, String rows, String algorithm) throws JsonProcessingException;
 
     /**
      * This method returns entity enrichment depending on given text, types and language.
@@ -27,7 +27,7 @@ public interface EntityClientApi {
      * @param type
      * @param rows
      */
-    public List<Entity> getEnrichment(String text, String lang, String type, String rows) throws JsonProcessingException;
+    public List<Entity> enrichEntity(String text, String lang, String type, String rows) throws JsonProcessingException;
 
     /**
      * Get Entity by EntityId
@@ -35,12 +35,12 @@ public interface EntityClientApi {
      * @return
      * @throws UnsupportedEntityTypeException
      */
-    public Entity getEntityById(String entityId);
+    public Entity getEntity(String entityId);
 
     /**
      * Get Entity by Uri
      * @param uri
      * @throws UnsupportedEntityTypeException
      */
-    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException;
+    public List<Entity> resolveEntity(String uri) throws TechnicalRuntimeException;
 }

@@ -16,10 +16,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <version.entityManagementApi>1.0</version.entityManagementApi>
+        <version.entityManagementApi>1.7.4.3</version.entityManagementApi>
     </properties>
 
     <dependencies>
@@ -37,11 +37,35 @@
             <groupId>eu.europeana.api</groupId>
             <artifactId>entity-management-definitions</artifactId>
             <version>${version.entityManagementApi}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.13.2</version>
         </dependency>
+
+        <!-- Overriding log4j, as there are version mismatch due to trasitive dependency then from EM or corelib  -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.24.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.24.3</version>
+        </dependency>
+
+
     </dependencies>
 </project>
