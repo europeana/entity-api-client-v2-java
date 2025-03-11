@@ -14,7 +14,7 @@ import reactor.netty.http.client.HttpClient;
 public class BaseEntityApiClient {
 
     private static final Logger LOG = LogManager.getLogger(BaseEntityApiClient.class);
-    private static final int maxInMemSizeMb = 10;
+    private static final int MAX_IN_MEM_SIZE_MB = 10;
 
     private final EntityClientConfiguration configuration;
     private EntityApiRestClient entityApiRestClient;
@@ -22,23 +22,38 @@ public class BaseEntityApiClient {
 
     protected BaseEntityApiClient(EntityClientConfiguration configuration) {
         this.configuration = configuration;
-        this.entityApiRestClient = new EntityApiRestClient(getApiClient(this.configuration.getEntityApiUrl(), false), this.configuration.getApikey());
-        this.entityManagementRestClient = new EntityManagementRestClient(getApiClient(this.configuration.getEntityManagementUrl(), true), this.configuration.getApikey());    }
+        this.entityApiRestClient = new EntityApiRestClient(getEntityApiClient(this.configuration.getEntityApiUrl()), this.configuration.getApikey());
+        this.entityManagementRestClient = new EntityManagementRestClient(getEntityManagementApiClient(this.configuration.getEntityManagementUrl()), this.configuration.getApikey());    }
 
     protected BaseEntityApiClient() {
         this(new EntityClientConfiguration());
     }
 
-    private WebClient getApiClient(String apiEndpoint, boolean followRedirects) {
+    private WebClient getEntityApiClient(String apiEndpoint) {
         return WebClient.builder()
                 .baseUrl(apiEndpoint)
                 .filter(logRequest())
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .followRedirect(followRedirects)))
+                        .followRedirect(false)))
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
-                                .maxInMemorySize(maxInMemSizeMb * 1024 * 1024))
+                                .maxInMemorySize(MAX_IN_MEM_SIZE_MB * 1024 * 1024))
+                        .build())
+                .build();
+    }
+
+
+    private WebClient getEntityManagementApiClient(String apiEndpoint) {
+        return WebClient.builder()
+                .baseUrl(apiEndpoint)
+                .filter(logRequest())
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .followRedirect(true)))
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_IN_MEM_SIZE_MB * 1024 * 1024))
                         .build())
                 .build();
     }

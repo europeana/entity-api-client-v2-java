@@ -31,23 +31,21 @@
 
     <properties>
         <java.version>17</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <version.entityManagementApi>1.7.4.3</version.entityManagementApi>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
 		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<!-- SG: NOTE: for newer maven compiler plugin only release version
 		should be required -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		
-        <version.entityManagementApi>1.7</version.entityManagementApi>
-        
-        <jackson.version>2.12.6.1</jackson.version>
-        <spring.webflux.version>5.3.20</spring.webflux.version>
-		<reactor.netty.http.version>1.0.19</reactor.netty.http.version>
+
+        <version.entityManagementApi>1.7.4.2-SNAPSHOT</version.entityManagementApi>
+        <jackson.version>2.18.3</jackson.version>
+        <spring.webflux.version>6.2.3</spring.webflux.version>
+		<reactor.netty.http.version>1.2.3</reactor.netty.http.version>
 		<junit.jupiter.version>5.7.2</junit.jupiter.version>
-		
+        <log4j.version>2.24.3</log4j.version>
+        <commons.lang.version>3.17.0</commons.lang.version>
+
     </properties>
 
     <dependencies>
@@ -56,6 +54,13 @@
             <artifactId>spring-webflux</artifactId>
             <version>${spring.webflux.version}</version>
         </dependency>
+        <!-- To fix the error : java.lang.NoClassDefFoundError - org/springframework/context/SmartLifecycle-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.webflux.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty-http</artifactId>
@@ -86,15 +91,21 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.24.3</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.24.3</version>
+            <version>${log4j.version}</version>
         </dependency>
 
-        
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang.version}</version>
+        </dependency>
+
         <!-- test -->
         <dependency>
 			<groupId>org.junit.jupiter</groupId>
