@@ -23,26 +23,26 @@ public class EntityClientApiImpl extends BaseEntityApiClient implements EntityCl
     }
 
     @Override
-    public List<Entity> getSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
+    public List<Entity> suggestEntity(String text, String language, String scope, String type, String rows, String algorithm)
             throws JsonProcessingException, TechnicalRuntimeException {
         List<String> suggestResults = getEntityApiRestClient().retrieveSuggestions(text, language, scope, type, rows, algorithm);
         return getMetadata(suggestResults);
     }
 
     @Override
-    public List<Entity> getEnrichment(String text, String lang, String type, String rows) throws JsonProcessingException {
+    public List<Entity> enrichEntity(String text, String lang, String type, String rows) throws JsonProcessingException {
         List<String> enrichResults = getEntityApiRestClient().retrieveEnrichment(text, lang, type, rows);
         return getMetadata(enrichResults);
     }
 
     @Override
-    public Entity getEntityById(String entityId) {
+    public Entity getEntity(String entityId) {
         return getEntityManagementRestClient().getEntityById(entityId);
     }
 
     @Override
-    public List<Entity> getEntityByUri(String uri) throws TechnicalRuntimeException {
-        List<String> resolveResults = getEntityApiRestClient().retrieveEntityByUri(uri);
+    public List<Entity> resolveEntity(String uri) throws TechnicalRuntimeException {
+        List<String> resolveResults = getEntityApiRestClient().resolveEntity(uri);
         return getMetadata(resolveResults);
     }
 

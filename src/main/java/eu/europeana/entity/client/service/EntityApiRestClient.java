@@ -45,11 +45,11 @@ public class EntityApiRestClient extends RestClient {
      * @return
      * @throws TechnicalRuntimeException
      */
-    public List<String> retrieveEntityByUri(String uri) throws TechnicalRuntimeException {
+    public List<String> resolveEntity(String uri) throws TechnicalRuntimeException {
         String entityId = getEntityId(webClient,
                 EntityClientUtils.buildEntityResolveUrl(uri, wskey), true);
         if(StringUtils.isNotEmpty(entityId)) {
-            LOGGER.debug("{} entity found for uri={} ", entityId, uri);
+            LOGGER.debug("entity :  {} , found for uri={} ", entityId, uri);
             return Collections.singletonList("\"" + entityId + "\"");
         }
         LOGGER.debug("No entity found for resolve uri={}", uri);
