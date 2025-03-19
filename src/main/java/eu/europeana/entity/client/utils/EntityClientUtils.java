@@ -4,18 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
-import eu.europeana.entitymanagement.utils.EntityRecordUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public class EntityClientUtils extends EntityApiConstants {
 
@@ -34,102 +35,94 @@ public class EntityClientUtils extends EntityApiConstants {
      * @param type
      * @param rows
      * @param algorithm
-     * @param wskey
      * @return
      */
-    public static Function<UriBuilder, URI> buildSuggestUrl(String text, String language, String scope, String type, String rows, String algorithm, String wskey) {
-        return uriBuilder -> {
-            UriBuilder builder =
-                    uriBuilder
-                            .path(PATH_SEPERATOR + SUGGEST_PATH)
-                            .queryParam(WSKEY, wskey)
-                            .queryParam(TEXT, text);
+    public static URI buildSuggestUrl(String url, String text, String language, String scope, String type, String rows, String algorithm) throws EntityClientException {
+        try {
+            URIBuilder builder = new URIBuilder(url)
+                    .addParameter(TEXT, text);
             if (language != null) {
-                builder.queryParam(LANGUAGE, language);
+                builder.addParameter(LANGUAGE, language);
             }
             if (scope != null) {
-                builder.queryParam(SCOPE, scope);
+                builder.addParameter(SCOPE, scope);
             }
             if (type != null) {
-                builder.queryParam(TYPE, type);
+                builder.addParameter(TYPE, type);
             }
             if (rows != null) {
-                builder.queryParam(ROWS, rows);
+                builder.addParameter(ROWS, rows);
             }
             if (algorithm != null) {
-                builder.queryParam(ALGORITHM, algorithm);
+                builder.addParameter(ALGORITHM, algorithm);
             }
             return builder.build();
-        };
+        } catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
-    public static Function<UriBuilder, URI> buildEntityEnrichUrl(String text, String lang, String type, String rows, String wskey) {
-        return uriBuilder -> {
-            UriBuilder builder =
-                    uriBuilder
-                            .path(PATH_SEPERATOR + ENRICH_PATH)
-                            .queryParam(WSKEY, wskey)
-                            .queryParam(TEXT, text);
+    public static URI buildEntityEnrichUrl(String url, String text, String lang, String type, String rows) throws EntityClientException {
+        try {
+            URIBuilder builder = new URIBuilder(url)
+                    .addParameter(TEXT, text);
             if (lang != null) {
-                builder.queryParam(LANG, lang);
+                builder.addParameter(LANG, lang);
             }
             if (type != null) {
-                builder.queryParam(TYPE, type);
+                builder.addParameter(TYPE, type);
             }
             if (rows != null) {
-                builder.queryParam(ROWS, rows);
+                builder.addParameter(ROWS, rows);
             }
             return builder.build();
-        };
+        } catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
 
     /**
      * Builds the Entity Api resolve url
-     * @param uri
-     * @param wsKey
+     * @param enityUrl
+     * @param resolveUri
      * @return
      */
-    public static Function<UriBuilder, URI> buildEntityResolveUrl(String uri, String wsKey) {
-        return uriBuilder -> {
-            UriBuilder builder =
-                    uriBuilder
-                            .path(PATH_SEPERATOR + RESOLVE_PATH)
-                            .queryParam(URI, uri)
-                            .queryParam(WSKEY, wsKey);
+    public static URI buildEntityResolveUrl(String enityUrl, String resolveUri) throws EntityClientException {
+        try {
+            URIBuilder builder = new URIBuilder(enityUrl)
+                    .addParameter(URI, resolveUri);
             return builder.build();
-        };
+        } catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
     /**
      * Builds the Entity management entity retrieval url
-     * @param id
-     * @param wsKey
-     * @return
+     * @param path
      */
-    public static Function<UriBuilder, URI> buildEntityRetrievalUrl(String id, String wsKey) {
-        return uriBuilder -> {
-            UriBuilder builder =
-                    uriBuilder
-                            .path(id)
-                            .queryParam(WSKEY, wsKey);
+    public static URI buildEntityRetrievalUrl(String path) throws EntityClientException {
+        try {
+            URIBuilder builder = new URIBuilder(path);
             return builder.build();
-        };
+        } catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
     /**
      * Builds the Entity management multiple entity retrieval url
-     * @param wsKey
+     * @param path
      * @return
      */
-    public static Function<UriBuilder, URI> buildMultipleEntityRetrievalUrl(String wsKey) {
-        return uriBuilder -> {
-            UriBuilder builder =
-                    uriBuilder
-                            .path(PATH_SEPERATOR + MULTIPLE_ENTITY_RETRIEVAL_PATH)
-                            .queryParam(WSKEY, wsKey);
+    public static URI buildMultipleEntityRetrievalUrl(String path) throws EntityClientException {
+        try {
+            URIBuilder builder = new URIBuilder(path);
             return builder.build();
-        };
+        } catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
     /**
@@ -139,15 +132,8 @@ public class EntityClientUtils extends EntityApiConstants {
      * @param id
      * @return
      */
-    @Deprecated
     public static String getEntityRetrievalId(String id) {
        return StringUtils.substringAfter(id, BASE_URL);
-       //base not used anymore
-//        if(StringUtils.contains(id, ENTITY_ID_BASE)) {
-//            return StringUtils.substringAfter(id, BASE_URL);
-//        } else {
-//            return  "/" + EntityRecordUtils.getEntityRequestPathWithBase(id);
-//        }
     }
 
     /**

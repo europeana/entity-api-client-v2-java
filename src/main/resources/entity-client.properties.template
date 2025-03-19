@@ -4,5 +4,14 @@ entity.management.url=
 #Entity Api V2 url for search and suggest
 entity.api.url=
 
-#APIKEY
-entity.api.key=
+## Authentication endpoints ( @See eu.europeana.api.commons_sb3.auth#AuthenticationConfig )
+
+## url and params for generating a Long Lasting token that refresh itself.
+token_endpoint=
+grant_params=
+
+# Apikey to access the client. Generates the Apikey Based Authentication.
+apikey=
+
+# for generating static token for the client to use. Only pass the token value (without Bearer)
+access_token=
