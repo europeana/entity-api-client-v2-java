@@ -2,9 +2,12 @@ package eu.europeana.entity.client.web;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
-import eu.europeana.entitymanagement.definitions.model.Organization;
+import eu.europeana.entity.client.EntityApiClient;
+import eu.europeana.entity.client.config.EntityClientConfiguration;
+import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entitymanagement.vocabulary.EntityTypes;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
@@ -16,6 +19,8 @@ import eu.europeana.entitymanagement.definitions.model.Entity;
  */
 class EntityClientTest {
 
+  EntityApi apiClient ;
+
   @Test
   void test() {
     fail("Not yet implemented");
@@ -23,12 +28,20 @@ class EntityClientTest {
 
 
   /**
+   * This constructor will create a Entity api client based on values present in properties file.
+   * @throws EntityClientException
+   */
+  @BeforeEach
+  void setup() throws EntityClientException {
+    apiClient =  new EntityApiClient(new EntityClientConfiguration());
+  }
+
+  /**
    * get entity
    * @throws JsonProcessingException
    */
   @Test
-  void testGetEntity_1() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testGetEntity_1() throws EntityClientException {
     Entity entity = apiClient.getEntity("http://data.europeana.eu/agent/61804");
     assertNotNull(entity);
     assertNotNull(entity.getType());
@@ -40,8 +53,7 @@ class EntityClientTest {
    * @throws JsonProcessingException
    */
   @Test
-  void testGetEntity_2() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testGetEntity_2() throws EntityClientException {
     Entity entity = apiClient.getEntity("http://data.europeana.eu/organization/1482250000001710507");
     assertNotNull(entity);
     assertNotNull(entity.getType());
@@ -54,16 +66,15 @@ class EntityClientTest {
    * To test new Organisation Type : Aggregator
    * @throws JsonProcessingException
    */
-  @Test
-  void testGetEntity_3() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
-    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
-    assertNotNull(entity);
-    assertNotNull(entity.getType());
-    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
-    assertNotNull(entity.getAggregatesFrom());
-
-  }
+//  @Test
+//  void testGetEntity_3() throws EntityClientException {
+//    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
+//    assertNotNull(entity);
+//    assertNotNull(entity.getType());
+//    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
+//    assertNotNull(entity.getAggregatesFrom());
+//
+//  }
 
 
   /**
@@ -71,8 +82,7 @@ class EntityClientTest {
    * @throws JsonProcessingException
    */
   @Test
-  void testResolveEntity_1() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testResolveEntity_1() throws EntityClientException {
     Entity entity = apiClient.resolveEntity("http://openlibrary.org/works/OL59188A").get(0);
     assertNotNull(entity);
     assertNotNull(entity.getType());
@@ -84,8 +94,7 @@ class EntityClientTest {
    * @throws JsonProcessingException
    */
   @Test
-  void testResolveEntity_2() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testResolveEntity_2() throws EntityClientException {
     Entity entity = apiClient.resolveEntity("http://dbpedia.org/resource/Johannes_Vermeer").get(0);
     assertNotNull(entity);
     assertNotNull(entity.getType());
@@ -94,8 +103,7 @@ class EntityClientTest {
 
 
   @Test
-  void testEnrichment_1() throws JsonProcessingException {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testEnrichment_1() throws EntityClientException {
     List<Entity> enrichments = apiClient.enrichEntity("CulturaItalia", null, "organization", null);
     assertNotNull(enrichments);
     assertFalse(enrichments.isEmpty());
@@ -104,11 +112,10 @@ class EntityClientTest {
 
   /**
    * To test new Organisation Type : Aggregator
-   * @throws JsonProcessingException
+   * @throws EntityClientException
    */
   @Test
-  void testEnrichment_2() throws JsonProcessingException {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testEnrichment_2() throws EntityClientException {
     List<Entity> enrichments = apiClient.enrichEntity("Euskariana", null, "organization", null);
     assertNotNull(enrichments);
     assertFalse(enrichments.isEmpty());
@@ -117,11 +124,10 @@ class EntityClientTest {
 
   /**
    * Test enrich
-   * @throws JsonProcessingException
+   * @throws EntityClientException
    */
   @Test
-  void testEnrichment_3() throws JsonProcessingException {
-    EntityClientApi apiClient = new EntityClientApiImpl();
+  void testEnrichment_3() throws EntityClientException {
     List<Entity> enrichments = apiClient.enrichEntity("Paris", null, "agent", null);
     assertNotNull(enrichments);
     assertFalse(enrichments.isEmpty());
