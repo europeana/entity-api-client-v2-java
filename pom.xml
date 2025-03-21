@@ -43,7 +43,6 @@
         <spring.webflux.version>6.2.3</spring.webflux.version>
 		<reactor.netty.http.version>1.2.3</reactor.netty.http.version>
 		<junit.jupiter.version>5.7.2</junit.jupiter.version>
-        <log4j.version>2.24.3</log4j.version>
         <commons.lang.version>3.17.0</commons.lang.version>
 
     </properties>
@@ -70,33 +69,11 @@
             <groupId>eu.europeana.api</groupId>
             <artifactId>entity-management-definitions</artifactId>
             <version>${version.entityManagementApi}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-
-        <!-- Overriding log4j, as there are version mismatch due to trasitive dependency then from EM or corelib  -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
