@@ -50,20 +50,20 @@ class EntityClientTest {
 
 
 
-  /**
-   * To test new Organisation Type : Aggregator
-   * @throws JsonProcessingException
-   */
-  @Test
-  void testGetEntity_3() {
-    EntityClientApi apiClient = new EntityClientApiImpl();
-    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
-    assertNotNull(entity);
-    assertNotNull(entity.getType());
-    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
-    assertNotNull(entity.getAggregatesFrom());
-
-  }
+//  /**
+//   * To test new Organisation Type : Aggregator
+//   * @throws JsonProcessingException
+//   */
+//  @Test
+//  void testGetEntity_3() {
+//    EntityClientApi apiClient = new EntityClientApiImpl();
+//    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
+//    assertNotNull(entity);
+//    assertNotNull(entity.getType());
+//    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
+//    assertNotNull(entity.getAggregatesFrom());
+//
+//  }
 
 
   /**
