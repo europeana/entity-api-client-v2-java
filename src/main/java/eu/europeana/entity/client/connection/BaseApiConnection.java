@@ -9,9 +9,13 @@ import eu.europeana.entity.client.utils.EntityApiConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Base class for creating connection to the apis - entity api and entity management
+ * @author srishti singh
+ */
 public class BaseApiConnection extends EntityApiConstants {
 
-    protected static final Logger LOGGER = LogManager.getLogger(EntityClientApiConnection.class);
+    protected static final Logger LOGGER = LogManager.getLogger(BaseApiConnection.class);
 
     protected static final String ERROR_MESSAGE = "Entity API Client call failed - ";
 

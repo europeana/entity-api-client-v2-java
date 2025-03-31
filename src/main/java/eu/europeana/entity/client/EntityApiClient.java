@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Entity Api Client
+ *
+ * @author srishti singh
+ */
 public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
 
     public EntityApiClient(EntityClientConfiguration configuration) throws EntityClientException {
@@ -47,6 +52,12 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
         return getMetadata(resolveResults);
     }
 
+    /**
+     * This methods fetches the Entities from EM for the list of entity ids
+     * @param results list of entity ids
+     * @return List of Entities
+     * @throws EntityClientException
+     */
     public List<Entity> getMetadata(List<String> results) throws EntityClientException {
         List<Entity> entities = new ArrayList<>();
         if (!results.isEmpty()) {
@@ -58,7 +69,7 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
             }
             // fail-safe check
             if (entities.size() != results.size()) {
-                List<String> retrievedEMEntities = entities.stream().map(Entity::getEntityId).collect(Collectors.toList());
+                List<String> retrievedEMEntities = entities.stream().map(Entity::getEntityId).toList();
                 //This should never happen, But just to be sure.
                 throw new EntityClientException("Mismatch between entity Api v2 entities =" + results + "  and EM entities=" + retrievedEMEntities);
             }

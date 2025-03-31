@@ -16,13 +16,27 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Entity Client Api Connection class
+ * @author srishti singh
+ */
 public class EntityClientApiConnection extends BaseApiConnection {
 
    public EntityClientApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth) {
        super(entityApiUri, entityManagementApiUri, auth);
    }
 
+    /**
+     * Retrieve suggestion (list of entity ids) for the text provided
+     * @param text text for entity suggest
+     * @param language language
+     * @param scope scope of the suggest
+     * @param type type of entity
+     * @param rows number of rows
+     * @param algorithm algorithm for entity suggest
+     * @return list of entity ids found
+     * @throws EntityClientException
+     */
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
             throws EntityClientException {
         try {
@@ -49,8 +63,8 @@ public class EntityClientApiConnection extends BaseApiConnection {
      *   300 (Multiple Choices) for a uri ie; more than one entity for one uri,
      *   empty list will be returned
      *
-     * @param uri
-     * @return
+     * @param uri uri to be resolved
+     * @return list of entity ids found
      * @throws EntityClientException
      */
     public List<String> resolveEntity(String uri) throws EntityClientException {
@@ -73,9 +87,18 @@ public class EntityClientApiConnection extends BaseApiConnection {
     }
 
 
+    /**
+     * Entity Enrichment retrieval
+     * @param text text for entity enrich
+     * @param language language for entity enrich
+     * @param type type of entity
+     * @param rows rows
+     * @return lis of entity ids
+     * @throws EntityClientException
+     */
     public List<String> retrieveEnrichment(String text, String language, String type, String rows) throws EntityClientException{
         try {
-            java.net.URI enrichUrl = EntityClientUtils.buildEntityEnrichUrl(entityApiUri + PATH_SEPERATOR + ENRICH_PATH, text, language, type, rows);
+            URI enrichUrl = EntityClientUtils.buildEntityEnrichUrl(entityApiUri + PATH_SEPERATOR + ENRICH_PATH, text, language, type, rows);
             HttpResponseHandler response = entityApiConnection.get(enrichUrl.toString(), ContentType.APPLICATION_JSON.getMimeType(), this.auth);
             if (response.getStatus() == HttpStatus.SC_OK) {
                 List<String> entities = EntityClientUtils.getEntityApiResults(response.getResponse());
@@ -94,13 +117,13 @@ public class EntityClientApiConnection extends BaseApiConnection {
     /**
      * Returns the Entity matching the entity id
      * This method executes the entity Retrieval method of EM.
-     * @param entityId
-     * @return
+     * @param entityId entity id to be fetched
+     * @return Entity for the given id
      * @throws EntityClientException
      */
     public Entity getEntityById(String entityId) throws  EntityClientException {
         try {
-            java.net.URI entityUrl = EntityClientUtils.buildEntityRetrievalUrl(entityManagementApiUri  + EntityClientUtils.getEntityRetrievalId(entityId));
+            URI entityUrl = EntityClientUtils.buildEntityRetrievalUrl(entityManagementApiUri  + EntityClientUtils.getEntityRetrievalId(entityId));
             HttpResponseHandler response = entityManagementConnection.get(entityUrl.toString(), ContentType.APPLICATION_JSON.getMimeType(), this.auth);
             if (response.getStatus() == HttpStatus.SC_OK) {
                 return mapper.readValue(response.getResponse(), Entity.class);
@@ -114,20 +137,24 @@ public class EntityClientApiConnection extends BaseApiConnection {
     /**
      * Returns the Entities matching the entity ids.
      * This method executes the Multiple entity Retrieval method of EM.
-     * @param entityIds
-     * @return
+     * @param entityIds lis of entity ids to be fetched
+     * @return list of entities
      * @throws EntityClientException
      */
     public List<Entity> getEntityByIds(List<String> entityIds) throws EntityClientException {
         try {
-            java.net.URI entityUrl = EntityClientUtils.buildMultipleEntityRetrievalUrl(entityManagementApiUri + PATH_SEPERATOR + MULTIPLE_ENTITY_RETRIEVAL_PATH);
-            HttpResponseHandler response = entityManagementConnection.post(entityUrl.toString(), entityIds.toString(), ContentType.APPLICATION_JSON.getMimeType(), this.auth);
+            URI entityUrl = EntityClientUtils.buildEntityRetrievalUrl(
+                    entityManagementApiUri + PATH_SEPERATOR + MULTIPLE_ENTITY_RETRIEVAL_PATH);
+            HttpResponseHandler response = entityManagementConnection.post(entityUrl.toString(),
+                    entityIds.toString(),
+                    ContentType.APPLICATION_JSON.getMimeType(),
+                    this.auth);
             if (response.getStatus() == HttpStatus.SC_OK) {
                 return mapper.readValue(response.getResponse(), EntityRetrievalResponse.class).getItems();
             }
         } catch (IOException e) {
             throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
         }
-        return null;
+        return Collections.emptyList();
     }
 }

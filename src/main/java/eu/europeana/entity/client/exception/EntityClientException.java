@@ -1,5 +1,8 @@
 package eu.europeana.entity.client.exception;
 
+/**
+ * Exception for the Entity client api
+ */
 public class EntityClientException extends Exception {
 
     private static final long serialVersionUID = 8281933808897246375L;

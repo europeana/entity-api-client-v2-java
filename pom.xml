@@ -51,7 +51,6 @@
 
         <!--  EM version with aggregator changes for testing -->
         <version.entityManagementApi>1.7.5</version.entityManagementApi>
-<!--        <version.entityManagementApi>1.7.4.3</version.entityManagementApi>-->
 
         <jackson.version>2.18.3</jackson.version>
         <spring.webflux.version>6.2.3</spring.webflux.version>

@@ -29,15 +29,18 @@ public class EntityClientUtils extends EntityApiConstants {
 
     /**
      * Builds the Entity Api suggest url
-     * @param text
-     * @param language
-     * @param scope
-     * @param type
-     * @param rows
-     * @param algorithm
-     * @return
+     * @param url suggest url
+     * @param text text for entity suggest
+     * @param language language
+     * @param scope scope of the suggest
+     * @param type type of entity
+     * @param rows number of rows
+     * @param algorithm algorithm for entity suggest
+     * @return list of entity ids found
+     * @return URI for entity suggest
      */
-    public static URI buildSuggestUrl(String url, String text, String language, String scope, String type, String rows, String algorithm) throws EntityClientException {
+    public static URI buildSuggestUrl(String url, String text, String language, String scope,
+                                      String type, String rows, String algorithm) throws EntityClientException {
         try {
             URIBuilder builder = new URIBuilder(url)
                     .addParameter(TEXT, text);
@@ -58,10 +61,19 @@ public class EntityClientUtils extends EntityApiConstants {
             }
             return builder.build();
         } catch (URISyntaxException e) {
-            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+            throw  new EntityClientException("Error creating suggest Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
+    /**
+     *
+     * @param url entity enrich url
+     * @param text text for entity suggest
+     * @param type type of entity
+     * @param rows number of rows
+     * @return Entity enrich url
+     * @throws EntityClientException
+     */
     public static URI buildEntityEnrichUrl(String url, String text, String lang, String type, String rows) throws EntityClientException {
         try {
             URIBuilder builder = new URIBuilder(url)
@@ -77,16 +89,16 @@ public class EntityClientUtils extends EntityApiConstants {
             }
             return builder.build();
         } catch (URISyntaxException e) {
-            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+            throw  new EntityClientException("Error creating enrich Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
 
     /**
      * Builds the Entity Api resolve url
-     * @param enityUrl
-     * @param resolveUri
-     * @return
+     * @param enityUrl entity Resolve Url
+     * @param resolveUri the uri to be resolved
+     * @return Entity resolve url
      */
     public static URI buildEntityResolveUrl(String enityUrl, String resolveUri) throws EntityClientException {
         try {
@@ -100,28 +112,14 @@ public class EntityClientUtils extends EntityApiConstants {
 
     /**
      * Builds the Entity management entity retrieval url
-     * @param path
+     * @param path Entity retrieval url
      */
     public static URI buildEntityRetrievalUrl(String path) throws EntityClientException {
         try {
             URIBuilder builder = new URIBuilder(path);
             return builder.build();
         } catch (URISyntaxException e) {
-            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
-        }
-    }
-
-    /**
-     * Builds the Entity management multiple entity retrieval url
-     * @param path
-     * @return
-     */
-    public static URI buildMultipleEntityRetrievalUrl(String path) throws EntityClientException {
-        try {
-            URIBuilder builder = new URIBuilder(path);
-            return builder.build();
-        } catch (URISyntaxException e) {
-            throw  new EntityClientException("Error creating resolve Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+            throw  new EntityClientException("Error creating Entity retrieval Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
@@ -138,8 +136,8 @@ public class EntityClientUtils extends EntityApiConstants {
 
     /**
      * Returns List of ids from suggest results
-     * @param json
-     * @return
+     * @param json json output
+     * @return list of entity ids
      * @throws JsonProcessingException
      * @throws UnsupportedEntityTypeException
      */

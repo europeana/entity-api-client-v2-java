@@ -6,6 +6,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Entity API client configuration class
+ * @author srishti singh
+ */
 public class EntityClientConfiguration extends AuthenticationConfig {
 
     private static final Logger LOGGER = LogManager.getLogger(EntityClientConfiguration.class);
@@ -27,9 +31,8 @@ public class EntityClientConfiguration extends AuthenticationConfig {
     private void loadProperties(String propertiesFile) {
         try {
             load(getClass().getResourceAsStream(propertiesFile));
-        }
-        catch (IOException e) {
-            LOGGER.error("Error loading the properties file {}", propertiesFile);
+        } catch (IOException e) {
+            LOGGER.error("Error loading the properties file {}", propertiesFile, e);
         }
     }
 
