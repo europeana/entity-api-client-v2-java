@@ -38,7 +38,8 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <version.entityManagementApi>1.7.4.3</version.entityManagementApi>
+        <!-- Updating EM version for aggregator testing-->
+        <version.entityManagementApi>1.7.5</version.entityManagementApi>
         <jackson.version>2.18.3</jackson.version>
         <spring.webflux.version>6.2.3</spring.webflux.version>
 		<reactor.netty.http.version>1.2.3</reactor.netty.http.version>
