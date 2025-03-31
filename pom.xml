@@ -14,7 +14,7 @@
     <name>entity-api-client</name>
     <description>API for getting entities</description>
     <packaging>jar</packaging>
-    
+
     <repositories>
 		<repository>
 			<id>libs-release-local</id>
@@ -26,6 +26,12 @@
 			<name>europeana-snapshots</name>
 			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot</url>
 		</repository>
+        <!-- repo for plugins, required to resolve git-commit-id -->
+        <repository>
+            <id>plugins-release</id>
+            <name>artifactory plugins-release</name>
+            <url>https://artifactory.eanadev.org/artifactory/plugins-release</url>
+        </repository>
 	</repositories>
 
 
@@ -38,9 +44,14 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <sonar.organization>europeana</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
         <!--  EM version with aggregator changes for testing -->
         <version.entityManagementApi>1.7.5</version.entityManagementApi>
-<!--        <version.entityManagementApi>1.7.4.3</version.entityManagementApi>-->
+
         <jackson.version>2.18.3</jackson.version>
         <spring.webflux.version>6.2.3</spring.webflux.version>
 		<reactor.netty.http.version>1.2.3</reactor.netty.http.version>
@@ -50,28 +61,20 @@
     </properties>
 
     <dependencies>
+
+        <!--Client is using api-commons-sb3 -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-            <version>${spring.webflux.version}</version>
-        </dependency>
-        <!-- To fix the error : java.lang.NoClassDefFoundError - org/springframework/context/SmartLifecycle-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.webflux.version}</version>
+            <groupId>eu.europeana.api</groupId>
+            <artifactId>commons-sb3-clientutils</artifactId>
+            <version>0.1.2-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty-http</artifactId>
-            <version>${reactor.netty.http.version}</version>
-        </dependency>
         <dependency>
             <groupId>eu.europeana.api</groupId>
             <artifactId>entity-management-definitions</artifactId>
             <version>${version.entityManagementApi}</version>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
