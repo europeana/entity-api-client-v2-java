@@ -12,6 +12,8 @@ import java.util.Properties;
  */
 public class EntityClientConfiguration extends AuthenticationConfig {
 
+    private static final long serialVersionUID = 1;
+
     private static final Logger LOGGER = LogManager.getLogger(EntityClientConfiguration.class);
 
     public static final String PROPERTIES_FILE = "/entity-client.properties";

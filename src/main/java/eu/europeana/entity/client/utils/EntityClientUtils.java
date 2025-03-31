@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europeana.entity.client.exception.EntityClientException;
-import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.net.URIBuilder;
@@ -38,6 +37,7 @@ public class EntityClientUtils extends EntityApiConstants {
      * @param algorithm algorithm for entity suggest
      * @return list of entity ids found
      * @return URI for entity suggest
+     * @throws EntityClientException is there is an uri error
      */
     public static URI buildSuggestUrl(String url, String text, String language, String scope,
                                       String type, String rows, String algorithm) throws EntityClientException {
@@ -72,7 +72,7 @@ public class EntityClientUtils extends EntityApiConstants {
      * @param type type of entity
      * @param rows number of rows
      * @return Entity enrich url
-     * @throws EntityClientException
+     * @throws EntityClientException is there is an uri error
      */
     public static URI buildEntityEnrichUrl(String url, String text, String lang, String type, String rows) throws EntityClientException {
         try {
@@ -99,6 +99,7 @@ public class EntityClientUtils extends EntityApiConstants {
      * @param enityUrl entity Resolve Url
      * @param resolveUri the uri to be resolved
      * @return Entity resolve url
+     * @throws EntityClientException is there is an uri error
      */
     public static URI buildEntityResolveUrl(String enityUrl, String resolveUri) throws EntityClientException {
         try {
@@ -113,6 +114,7 @@ public class EntityClientUtils extends EntityApiConstants {
     /**
      * Builds the Entity management entity retrieval url
      * @param path Entity retrieval url
+     * @throws EntityClientException is there is an uri error
      */
     public static URI buildEntityRetrievalUrl(String path) throws EntityClientException {
         try {
@@ -138,8 +140,7 @@ public class EntityClientUtils extends EntityApiConstants {
      * Returns List of ids from suggest results
      * @param json json output
      * @return list of entity ids
-     * @throws JsonProcessingException
-     * @throws UnsupportedEntityTypeException
+     * @throws JsonProcessingException if there is an error while processing json
      */
     public static List<String> getEntityApiResults(String json) throws JsonProcessingException {
         List<String> entities = new ArrayList<>();

@@ -35,7 +35,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
      * @param rows number of rows
      * @param algorithm algorithm for entity suggest
      * @return list of entity ids found
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is an error in post request or reading the response
      */
     public List<String> retrieveSuggestions(String text, String language, String scope, String type, String rows, String algorithm)
             throws EntityClientException {
@@ -65,7 +65,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
      *
      * @param uri uri to be resolved
      * @return list of entity ids found
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is an error in post request or reading the response
      */
     public List<String> resolveEntity(String uri) throws EntityClientException {
         try {
@@ -94,7 +94,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
      * @param type type of entity
      * @param rows rows
      * @return lis of entity ids
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is an error in post request or reading the response
      */
     public List<String> retrieveEnrichment(String text, String language, String type, String rows) throws EntityClientException{
         try {
@@ -119,7 +119,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
      * This method executes the entity Retrieval method of EM.
      * @param entityId entity id to be fetched
      * @return Entity for the given id
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is an error in post request or reading the response
      */
     public Entity getEntityById(String entityId) throws  EntityClientException {
         try {
@@ -139,7 +139,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
      * This method executes the Multiple entity Retrieval method of EM.
      * @param entityIds lis of entity ids to be fetched
      * @return list of entities
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is an error in post request or reading the response
      */
     public List<Entity> getEntityByIds(List<String> entityIds) throws EntityClientException {
         try {

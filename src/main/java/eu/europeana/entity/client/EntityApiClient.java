@@ -56,7 +56,7 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
      * This methods fetches the Entities from EM for the list of entity ids
      * @param results list of entity ids
      * @return List of Entities
-     * @throws EntityClientException
+     * @throws EntityClientException throws if there is a mismatch b/w entities
      */
     public List<Entity> getMetadata(List<String> results) throws EntityClientException {
         List<Entity> entities = new ArrayList<>();

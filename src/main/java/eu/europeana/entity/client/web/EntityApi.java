@@ -6,6 +6,9 @@ import eu.europeana.entitymanagement.definitions.model.Entity;
 
 import java.util.List;
 
+/**
+ * Entity client api interface
+ */
 public interface EntityApi {
 
     /**
