@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
-import eu.europeana.api.commons_sb3.http.HttpConnection;
+import eu.europeana.api.commons_sb3.http.AsyncHttpConnection;
 import eu.europeana.entity.client.utils.EntityApiConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +19,8 @@ public class BaseApiConnection extends EntityApiConstants {
 
     protected static final String ERROR_MESSAGE = "Entity API Client call failed - ";
 
-    protected final HttpConnection entityApiConnection = new HttpConnection();
-    protected final HttpConnection entityManagementConnection = new HttpConnection(true);
+    protected final AsyncHttpConnection entityApiConnection = new AsyncHttpConnection();
+    protected final AsyncHttpConnection entityManagementConnection = new AsyncHttpConnection(true);
 
     protected final ObjectMapper mapper = new ObjectMapper();
 
@@ -45,6 +45,9 @@ public class BaseApiConnection extends EntityApiConstants {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(module);
         mapper.findAndRegisterModules();
+        // start the async client
+        entityApiConnection.start();
+        entityManagementConnection.start();
     }
 
 

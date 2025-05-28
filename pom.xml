@@ -52,9 +52,8 @@
         <!--  EM version with aggregator changes for testing -->
         <version.entityManagementApi>1.7.5</version.entityManagementApi>
 
+        <version-api-commons-sb3>0.1.2-SNAPSHOT</version-api-commons-sb3>
         <jackson.version>2.18.3</jackson.version>
-        <spring.webflux.version>6.2.3</spring.webflux.version>
-		<reactor.netty.http.version>1.2.3</reactor.netty.http.version>
 		<junit.jupiter.version>5.7.2</junit.jupiter.version>
         <commons.lang.version>3.17.0</commons.lang.version>
 
@@ -66,7 +65,7 @@
         <dependency>
             <groupId>eu.europeana.api</groupId>
             <artifactId>commons-sb3-clientutils</artifactId>
-            <version>0.1.2-SNAPSHOT</version>
+            <version>${version-api-commons-sb3}</version>
         </dependency>
 
         <dependency>
