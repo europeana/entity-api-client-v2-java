@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europeana</groupId>
+        <artifactId>europeana-parent-pom</artifactId>
+        <version>2.4</version>
+    </parent>
+
+    <groupId>eu.europeana.api</groupId>
+    <artifactId>entity-api-client</artifactId>
+    <version>2.1.1-SNAPSHOT</version>
+    <name>entity-api-client</name>
+    <description>API for getting entities</description>
+    <packaging>jar</packaging>
+
+    <repositories>
+		<repository>
+			<id>libs-release-local</id>
+			<name>europeana-releases</name>
+			<url>https://artifactory.eanadev.org/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<id>libs-snapshots-local</id>
+			<name>europeana-snapshots</name>
+			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot</url>
+		</repository>
+        <!-- repo for plugins, required to resolve git-commit-id -->
+        <repository>
+            <id>plugins-release</id>
+            <name>artifactory plugins-release</name>
+            <url>https://artifactory.eanadev.org/artifactory/plugins-release</url>
+        </repository>
+	</repositories>
+
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<!-- SG: NOTE: for newer maven compiler plugin only release version
+		should be required -->
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <sonar.organization>europeana</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!--  EM version with aggregator changes for testing -->
+        <version.entityManagementApi>1.7.5</version.entityManagementApi>
+
+        <version-api-commons-sb3>0.1.2-SNAPSHOT</version-api-commons-sb3>
+        <jackson.version>2.18.3</jackson.version>
+		<junit.jupiter.version>5.7.2</junit.jupiter.version>
+        <commons.lang.version>3.17.0</commons.lang.version>
+
+    </properties>
+
+    <dependencies>
+
+        <!--Client is using api-commons-sb3 -->
+        <dependency>
+            <groupId>eu.europeana.api</groupId>
+            <artifactId>commons-sb3-clientutils</artifactId>
+            <version>${version-api-commons-sb3}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europeana.api</groupId>
+            <artifactId>entity-management-definitions</artifactId>
+            <version>${version.entityManagementApi}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang.version}</version>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+			<version>${junit.jupiter.version}</version>
+		</dependency>
+    </dependencies>
+    
+    <build>
+    	<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.plugin.version}</version>
+				</plugin>
+			</plugins>
+    	</pluginManagement>
+    </build>
+</project>
