@@ -6,10 +6,11 @@ import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entity.client.web.EntityApi;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Entity Api Client
@@ -25,6 +26,38 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
     public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth)
             throws EntityClientException {
         super(entityApiUri, entityManagementApiUri, auth);
+    }
+
+
+    /**
+     * Client to create custom Request Config (timeout, keep alive etc values) and
+     * connection manager to handle the connection per routes
+     * @param configuration configuration for cleint
+     * @param connPool connection manager for the client
+     * @param requestConfig Request configuration
+     * @throws EntityClientException
+     */
+    public EntityApiClient(EntityClientConfiguration configuration,
+                           PoolingAsyncClientConnectionManager connPool,
+                           RequestConfig requestConfig) throws EntityClientException {
+        super(configuration, connPool, requestConfig);
+    }
+
+
+    /**
+     * Client to create custom Request Config (timeout, keep alive etc values) and
+     * connection manager to handle the connection per routes
+     * @param entityApiUri entity api url
+     * @param entityManagementApiUri  entity management url
+     * @param connPool connection manager for the client
+     * @param requestConfig Request configuration
+     * @throws EntityClientException
+     */
+    public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
+                           PoolingAsyncClientConnectionManager connPool,
+                           RequestConfig requestConfig)
+            throws EntityClientException {
+        super(entityApiUri, entityManagementApiUri, auth, connPool, requestConfig);
     }
 
 

@@ -7,6 +7,8 @@ import eu.europeana.entity.client.utils.EntityClientUtils;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
@@ -28,6 +30,11 @@ public class EntityClientApiConnection extends BaseApiConnection {
    public EntityClientApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth) {
        super(entityApiUri, entityManagementApiUri, auth);
    }
+
+    public EntityClientApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
+                                     PoolingAsyncClientConnectionManager connPool, RequestConfig requestConfig) {
+        super(entityApiUri, entityManagementApiUri, auth, connPool, requestConfig);
+    }
 
     /**
      * Retrieve suggestion (list of entity ids) for the text provided

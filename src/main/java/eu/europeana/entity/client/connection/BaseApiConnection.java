@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
 import eu.europeana.api.commons_sb3.http.AsyncHttpConnection;
 import eu.europeana.entity.client.utils.EntityApiConstants;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,8 +21,8 @@ public class BaseApiConnection extends EntityApiConstants {
 
     protected static final String ERROR_MESSAGE = "Entity API Client call failed - ";
 
-    protected final AsyncHttpConnection entityApiConnection = new AsyncHttpConnection();
-    protected final AsyncHttpConnection entityManagementConnection = new AsyncHttpConnection(true);
+    protected final AsyncHttpConnection entityApiConnection;
+    protected final AsyncHttpConnection entityManagementConnection;
 
     protected final ObjectMapper mapper = new ObjectMapper();
 
@@ -36,18 +38,37 @@ public class BaseApiConnection extends EntityApiConstants {
      * @param auth Authentication Handler for the client
      */
     public BaseApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth) {
-        this.entityApiUri = entityApiUri;
-        this.entityManagementApiUri = entityManagementApiUri;
-        this.auth = auth;
+       initialize(entityApiUri, entityManagementApiUri, auth);
 
-        // set object mapper
-        SimpleModule module = new SimpleModule();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(module);
-        mapper.findAndRegisterModules();
+       // create basic CloseableHttpAsyncClient with default Connection pool
+        this.entityApiConnection        = new AsyncHttpConnection();
+        this.entityManagementConnection =  new AsyncHttpConnection(true);
         // start the async client
         entityApiConnection.start();
         entityManagementConnection.start();
+    }
+
+    public BaseApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth, PoolingAsyncClientConnectionManager connPool,  RequestConfig requestConfig) {
+        initialize(entityApiUri, entityManagementApiUri, auth);
+
+        // create CloseableHttpAsyncClient with custom connection pool and request config
+        this.entityApiConnection        = new AsyncHttpConnection(connPool, requestConfig, false);
+        this.entityManagementConnection =  new AsyncHttpConnection(connPool, requestConfig, true);
+        // start the async client
+        entityApiConnection.start();
+        entityManagementConnection.start();
+    }
+
+    private void initialize(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth) {
+        this.entityApiUri               = entityApiUri;
+        this.entityManagementApiUri     = entityManagementApiUri;
+        this.auth                       = auth;
+
+        // set object mapper
+        SimpleModule module             = new SimpleModule();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.registerModule(module);
+        mapper.findAndRegisterModules();
     }
 
 
@@ -60,4 +81,11 @@ public class BaseApiConnection extends EntityApiConstants {
     }
 
 
+    public AsyncHttpConnection getEntityApiConnection() {
+        return entityApiConnection;
+    }
+
+    public AsyncHttpConnection getEntityManagementConnection() {
+        return entityManagementConnection;
+    }
 }
