@@ -47,7 +47,6 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
         super(entityApiUri, entityManagementApiUri, auth, connPool, reactorConfig, requestConfig);
     }
 
-
     @Override
     public List<Entity> suggestEntity(String text, String language, String scope, String type, String rows, String algorithm)
             throws EntityClientException {
