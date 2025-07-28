@@ -13,6 +13,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ProtocolException;
+import org.apache.hc.core5.reactor.IOReactorConfig;
 
 
 import java.io.IOException;
@@ -32,8 +33,10 @@ public class EntityClientApiConnection extends BaseApiConnection {
    }
 
     public EntityClientApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
-                                     PoolingAsyncClientConnectionManager connPool, RequestConfig requestConfig) {
-        super(entityApiUri, entityManagementApiUri, auth, connPool, requestConfig);
+                                     PoolingAsyncClientConnectionManager connPool,
+                                     IOReactorConfig reactorConfig,
+                                     RequestConfig requestConfig) {
+        super(entityApiUri, entityManagementApiUri, auth, connPool, reactorConfig, requestConfig);
     }
 
     /**

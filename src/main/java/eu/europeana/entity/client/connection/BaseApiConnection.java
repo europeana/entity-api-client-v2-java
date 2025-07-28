@@ -8,6 +8,7 @@ import eu.europeana.api.commons_sb3.http.AsyncHttpConnection;
 import eu.europeana.entity.client.utils.EntityApiConstants;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
+import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,12 +49,15 @@ public class BaseApiConnection extends EntityApiConstants {
         entityManagementConnection.start();
     }
 
-    public BaseApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth, PoolingAsyncClientConnectionManager connPool,  RequestConfig requestConfig) {
+    public BaseApiConnection(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
+                             PoolingAsyncClientConnectionManager connPool,
+                             IOReactorConfig reactorConfig,
+                             RequestConfig requestConfig) {
         initialize(entityApiUri, entityManagementApiUri, auth);
 
-        // create CloseableHttpAsyncClient with custom connection pool and request config
-        this.entityApiConnection        = new AsyncHttpConnection(connPool, requestConfig, false);
-        this.entityManagementConnection =  new AsyncHttpConnection(connPool, requestConfig, true);
+        // create CloseableHttpAsyncClient with custom connection pool , reactor config, and request config
+        this.entityApiConnection        = new AsyncHttpConnection(connPool, requestConfig, reactorConfig, false);
+        this.entityManagementConnection =  new AsyncHttpConnection(connPool, requestConfig, reactorConfig, true);
         // start the async client
         entityApiConnection.start();
         entityManagementConnection.start();

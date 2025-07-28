@@ -8,6 +8,7 @@ import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
+import org.apache.hc.core5.reactor.IOReactorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,36 +29,22 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
         super(entityApiUri, entityManagementApiUri, auth);
     }
 
-
     /**
-     * Client to create custom Request Config (timeout, keep alive etc values) and
-     * connection manager to handle the connection per routes
-     * @param configuration configuration for cleint
-     * @param connPool connection manager for the client
-     * @param requestConfig Request configuration
-     * @throws EntityClientException
-     */
-    public EntityApiClient(EntityClientConfiguration configuration,
-                           PoolingAsyncClientConnectionManager connPool,
-                           RequestConfig requestConfig) throws EntityClientException {
-        super(configuration, connPool, requestConfig);
-    }
-
-
-    /**
-     * Client to create custom Request Config (timeout, keep alive etc values) and
-     * connection manager to handle the connection per routes
+     * Client to create custom Request Config (timeout, keep alive etc values) and IOReactorConfig for socket timeouts etc
+     * connection manager to handle the connection
      * @param entityApiUri entity api url
      * @param entityManagementApiUri  entity management url
      * @param connPool connection manager for the client
+     * @param reactorConfig Custom IO Reactor config for the client
      * @param requestConfig Request configuration
      * @throws EntityClientException
      */
     public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
                            PoolingAsyncClientConnectionManager connPool,
+                           IOReactorConfig reactorConfig,
                            RequestConfig requestConfig)
             throws EntityClientException {
-        super(entityApiUri, entityManagementApiUri, auth, connPool, requestConfig);
+        super(entityApiUri, entityManagementApiUri, auth, connPool, reactorConfig, requestConfig);
     }
 
 
