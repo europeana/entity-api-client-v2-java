@@ -5,6 +5,9 @@ import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.connection.EntityClientApiConnection;
 import eu.europeana.entity.client.exception.EntityClientException;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
+import org.apache.hc.core5.reactor.IOReactorConfig;
 
 public class BaseEntityApiClient {
 
@@ -20,12 +23,22 @@ public class BaseEntityApiClient {
         }
         if (entityManagementUrl == null) {
             throw new EntityClientException(" Entity Management Api endpoint not provided !!!");
-
         }
-
         this.entityClientApiConnection = new EntityClientApiConnection(entityApiUrl, entityManagementUrl, auth);
     }
 
+    protected BaseEntityApiClient(String entityApiUrl, String entityManagementUrl, AuthenticationHandler auth,
+                                  PoolingAsyncClientConnectionManager connPool,
+                                  IOReactorConfig reactorConfig,
+                                  RequestConfig requestConfig) throws EntityClientException {
+        if (entityApiUrl == null) {
+            throw new EntityClientException(" Entity Api endpoint not provided !!!");
+        }
+        if (entityManagementUrl == null) {
+            throw new EntityClientException(" Entity Management Api endpoint not provided !!!");
+        }
+        this.entityClientApiConnection = new EntityClientApiConnection(entityApiUrl, entityManagementUrl, auth, connPool, reactorConfig, requestConfig);
+    }
 
     public AuthenticationHandler getAuthenticationHandler() {
         return entityClientApiConnection.getAuthenticationHandler();

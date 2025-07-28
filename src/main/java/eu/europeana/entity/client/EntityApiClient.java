@@ -6,10 +6,12 @@ import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entity.client.web.EntityApi;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
+import org.apache.hc.core5.reactor.IOReactorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Entity Api Client
@@ -27,6 +29,23 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
         super(entityApiUri, entityManagementApiUri, auth);
     }
 
+    /**
+     * Client to create custom Request Config (timeout, keep alive etc values) and IOReactorConfig for socket timeouts etc
+     * connection manager to handle the connection
+     * @param entityApiUri entity api url
+     * @param entityManagementApiUri  entity management url
+     * @param connPool connection manager for the client
+     * @param reactorConfig Custom IO Reactor config for the client
+     * @param requestConfig Request configuration
+     * @throws EntityClientException
+     */
+    public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
+                           PoolingAsyncClientConnectionManager connPool,
+                           IOReactorConfig reactorConfig,
+                           RequestConfig requestConfig)
+            throws EntityClientException {
+        super(entityApiUri, entityManagementApiUri, auth, connPool, reactorConfig, requestConfig);
+    }
 
     @Override
     public List<Entity> suggestEntity(String text, String language, String scope, String type, String rows, String algorithm)
