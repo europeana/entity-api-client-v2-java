@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
 import eu.europeana.api.commons_sb3.http.AsyncHttpConnection;
+import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entity.client.utils.EntityApiConstants;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * Base class for creating connection to the apis - entity api and entity management
@@ -91,5 +94,14 @@ public class BaseApiConnection extends EntityApiConstants {
 
     public AsyncHttpConnection getEntityManagementConnection() {
         return entityManagementConnection;
+    }
+
+    public void close() throws EntityClientException {
+        try {
+            entityApiConnection.close();
+            entityManagementConnection.close();
+        } catch (IOException e) {
+            throw new EntityClientException("Error while closing the client connections... ");
+        }
     }
 }

@@ -52,4 +52,8 @@ public class BaseEntityApiClient {
         return entityClientApiConnection;
     }
 
+    public void close() throws EntityClientException {
+        this.entityClientApiConnection.close();
+    }
+
 }
