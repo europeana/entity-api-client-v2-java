@@ -50,7 +50,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <!--  EM version with aggregator changes for testing -->
-        <version.entityManagementApi>1.7.5</version.entityManagementApi>
+        <version.entityManagementApi>1.7.6</version.entityManagementApi>
 
         <version-api-commons-sb3>0.1.3-SNAPSHOT</version-api-commons-sb3>
         <jackson.version>2.18.3</jackson.version>
