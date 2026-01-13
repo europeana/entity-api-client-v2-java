@@ -5,6 +5,7 @@ import java.util.List;
 import eu.europeana.entity.client.EntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.EntityClientException;
+import eu.europeana.entitymanagement.definitions.model.Organization;
 import eu.europeana.entitymanagement.vocabulary.EntityTypes;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,15 +67,32 @@ class EntityClientTest {
    * To test new Organisation Type : Aggregator
    * @throws JsonProcessingException
    */
-//  @Test
-//  void testGetEntity_3() throws EntityClientException {
-//    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
-//    assertNotNull(entity);
-//    assertNotNull(entity.getType());
-//    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
-//    assertNotNull(entity.getAggregatesFrom());
-//
-//  }
+  @Test
+  void testGetEntity_3() throws EntityClientException {
+    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
+    assertNotNull(entity);
+    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
+    assertNotNull(entity.getAggregatesFrom());
+
+  }
+
+  /**
+   * To test the hasGeo fields in Organisation
+   * @throws JsonProcessingException
+   */
+  @Test
+  void testGetEntity_4() throws EntityClientException {
+    Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/713");
+    assertNotNull(entity);
+    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Organization.getEntityType(), entity.getType());
+    // check address and has geo
+    assertNotNull(entity.getAddress());
+    assertNotNull(entity.getAddress().getVcardHasGeo());
+    assertNotNull(entity.getAddress().getVcardHasGeo().hasMetadataProperties());
+
+  }
 
 
   /**
