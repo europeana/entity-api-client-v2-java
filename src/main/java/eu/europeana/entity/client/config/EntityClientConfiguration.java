@@ -1,6 +1,7 @@
 package eu.europeana.entity.client.config;
 
 import eu.europeana.api.commons_sb3.auth.AuthenticationConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
@@ -19,6 +20,15 @@ public class EntityClientConfiguration extends AuthenticationConfig {
     public static final String PROPERTIES_FILE = "/entity-client.properties";
     public static final String ENTITY_API_URL = "entity.api.url";
     public static final String ENTITY_MANAGEMENT_URL = "entity.management.url";
+
+    // client connection configuration
+    public static final String TOTAL_MAX_CONNECTION       = "entity.client.total.max.connection";
+    public static final String MAX_CONNECTION_PER_ROUTE   = "entity.client.max.connection.per.route";
+    public static final String VALIDATE_AFTER_INACTIVITY  = "entity.client.validate.after.inactivity";
+    public static final String TIME_TO_LIVE               = "entity.client.time.to.live";
+    public static final String SOCKET_TIMEOUT             = "entity.client.socket.timeout";
+    public static final String CONNECTION_REQUEST_TIMEOUT = "entity.client.connection.request.timeout";
+    public static final String RESPONSE_TIMEOUT           = "entity.client.response.timeout";
 
 
     public EntityClientConfiguration() {
@@ -45,6 +55,58 @@ public class EntityClientConfiguration extends AuthenticationConfig {
 
     public String getEntityManagementUrl() {
         return getProperty(ENTITY_MANAGEMENT_URL);
+    }
+
+    public String getTotalMaxConnection() {
+        return getProperty(TOTAL_MAX_CONNECTION);
+    }
+
+    public String getMaxConnectionPerRoute() {
+        return getProperty(MAX_CONNECTION_PER_ROUTE);
+    }
+
+    public String getValidateAfterInactivity() {
+        return getProperty(VALIDATE_AFTER_INACTIVITY);
+    }
+
+    public String getTimeToLive() {
+        return getProperty(TIME_TO_LIVE);
+    }
+
+    public String getConnectionRequestTimeout() {
+        return getProperty(CONNECTION_REQUEST_TIMEOUT);
+    }
+
+    public String getSocketTimeout() {
+        return getProperty(SOCKET_TIMEOUT);
+    }
+
+    public String getResponseTimeout() {
+        return getProperty(RESPONSE_TIMEOUT);
+    }
+
+    public int getConnectionConfigValue(String property) {
+        String value = getProperty(property);
+        if (StringUtils.isNotEmpty(value)) {
+            return Integer.parseInt(value);
+        }
+        return 0;
+    }
+
+    public boolean hasPoolingConnMetadata() {
+        return StringUtils.isNotBlank(getTotalMaxConnection()) ||
+                StringUtils.isNotBlank(getMaxConnectionPerRoute()) ||
+                StringUtils.isNotBlank(getValidateAfterInactivity()) ||
+                StringUtils.isNotBlank(getTimeToLive()) ;
+    }
+
+    public boolean hasIOReactorMetadata() {
+        return StringUtils.isNotBlank(getSocketTimeout());
+    }
+
+    public boolean hasRequestConfigMetadata() {
+        return StringUtils.isNotBlank(getResponseTimeout()) ||
+                StringUtils.isNotBlank(getConnectionRequestTimeout());
     }
 
 }
