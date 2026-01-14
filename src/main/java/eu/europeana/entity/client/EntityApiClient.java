@@ -1,14 +1,12 @@
 package eu.europeana.entity.client;
 
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
+import eu.europeana.entity.client.config.ClientConnectionConfig;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entity.client.web.EntityApi;
 import eu.europeana.entitymanagement.definitions.model.Entity;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.client5.http.config.RequestConfig;
-import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
-import org.apache.hc.core5.reactor.IOReactorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,31 +18,55 @@ import java.util.List;
  */
 public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
 
+    /**
+     * Creates a EntityApiClient from the entity client configuration (via properties)
+     * If client connection properties are present - creates a custom client
+     *       else creates client with defaults
+     *
+     * @param configuration entity client configuration
+     * @throws EntityClientException
+     */
     public EntityApiClient(EntityClientConfiguration configuration) throws EntityClientException {
         super(configuration);
     }
 
+    /**
+     * Creates EntityApiClient connection with defaults
+     * @param entityApiUri
+     * @param entityManagementApiUri
+     * @throws EntityClientException
+     */
     public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth)
             throws EntityClientException {
         super(entityApiUri, entityManagementApiUri, auth);
     }
 
     /**
-     * Client to create custom Request Config (timeout, keep alive etc values) and IOReactorConfig for socket timeouts etc
-     * connection manager to handle the connection
+     * Creates a EntityApiClient
+     *    custom : if ClientConnectionConfig values are present will create a custom client with Request Config (timeout, keep alive etc values),
+     *             IOReactorConfig for socket timeouts etc and connection manager to handle the connection
+     *    default : if ClientConnectionConfig is null or empty
      * @param entityApiUri entity api url
      * @param entityManagementApiUri  entity management url
-     * @param connPool connection manager for the client
-     * @param reactorConfig Custom IO Reactor config for the client
-     * @param requestConfig Request configuration
+     * @param connectionConfig client connection manager for the client
      * @throws EntityClientException
      */
-    public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth,
-                           PoolingAsyncClientConnectionManager connPool,
-                           IOReactorConfig reactorConfig,
-                           RequestConfig requestConfig)
+    public EntityApiClient(String entityApiUri, String entityManagementApiUri, AuthenticationHandler auth, ClientConnectionConfig connectionConfig)
             throws EntityClientException {
-        super(entityApiUri, entityManagementApiUri, auth, connPool, reactorConfig, requestConfig);
+        super(entityApiUri, entityManagementApiUri, auth, connectionConfig);
+    }
+
+    /**
+     * Creates a EntityApiClient
+     *    custom : if configuration has connection propeties OR ClientConnectionConfig values are present will create a custom client
+     *    default : if both configuration doesn't have connection properties and ClientConnectionConfig is null or empty
+     * @param configuration entity client configuration
+     * @param connectionConfig client connection manager for the client
+     * @throws EntityClientException
+     */
+    public EntityApiClient(EntityClientConfiguration configuration, ClientConnectionConfig connectionConfig)
+            throws EntityClientException {
+        super(configuration, connectionConfig);
     }
 
     @Override
