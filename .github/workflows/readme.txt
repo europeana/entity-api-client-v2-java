@@ -11,7 +11,11 @@ gpg --symmetric --cipher-algo AES256 entity-client.properties
 
 B - Use Encrypted Properties
 1. Create & configure decrypt script (decrypt_config.sh)
-1.1 on linux, ensure executions rights: chmod +x decrypt_config.sh
+1.1 ensure executions rights before committing to github: 
+#on Windows cygwin or WSL or Git Bash can be used
+chmod +x decrypt_config.sh
+ls -l decrypt_config.sh
+
 2. Ensure that the application is able to load properties from external file and that the decripted properties file matches the location from which the app is loading properties 
 3. Update Github Workflow to run decrypt script (NOTE: secrets.CLIENT_PROPS_PASS is the name of the secret in Github secrets see Settings-> Secrets and Variables -> Actions -> Secrets)
 
@@ -26,4 +30,5 @@ B - Use Encrypted Properties
           SECRET_PROPS_PASSPHRASE: ${{ secrets.CLIENT_PROPS_PASS }}
 	   .....  
 	   
-4. Verify successfull execution of system integration tests in Github
+4. Commit the code to github
+5. Verify successfull execution of system integration tests in Github
