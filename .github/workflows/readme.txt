@@ -20,7 +20,10 @@ B - Use Encrypted Properties
       - uses: actions/checkout@v5
 	  ....
       - name: Decrypt configuration properties
-        run: ./decrypt_config.sh
+		#relative to base project folder
+        run: ./.github/workflows/decrypt_config.sh
         env:
           SECRET_PROPS_PASSPHRASE: ${{ secrets.CLIENT_PROPS_PASS }}
 	   .....  
+	   
+4. Verify successfull execution of system integration tests in Github
