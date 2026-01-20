@@ -24,3 +24,5 @@ B - Use Encrypted Properties
         env:
           SECRET_PROPS_PASSPHRASE: ${{ secrets.CLIENT_PROPS_PASS }}
 	   .....  
+	   
+4. Verify successfull execution of system integration tests in Github
