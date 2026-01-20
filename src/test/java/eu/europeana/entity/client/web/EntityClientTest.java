@@ -2,6 +2,7 @@ package eu.europeana.entity.client.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -90,7 +91,7 @@ class EntityClientTest {
     // check address and has geo
     assertNotNull(entity.getAddress());
     assertNotNull(entity.getAddress().getVcardHasGeo());
-    assertNotNull(entity.getAddress().getVcardHasGeo().hasMetadataProperties());
+    assertTrue(entity.getAddress().getVcardHasGeo().hasMetadataProperties());
 
   }
 
