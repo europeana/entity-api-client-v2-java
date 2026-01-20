@@ -46,10 +46,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.organization>europeana</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.exclusions>**/*.gpg,**/*.template</sonar.exclusions>
-
+        
         <!--  EM version with aggregator changes for testing -->
         <version.entityManagementApi>1.7.6</version.entityManagementApi>
 
@@ -57,6 +54,32 @@
         <jackson.version>2.18.3</jackson.version>
 		<junit.jupiter.version>5.7.2</junit.jupiter.version>
         <commons.lang.version>3.17.0</commons.lang.version>
+
+        <!--Sonar  properties -->
+        <sonar.organization>europeana</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.exclusions>**/*.gpg,**/*.template</sonar.exclusions>
+        <aggregate.report.xml>
+			entity-management-tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
+		<sonar.java.spotbugs.reportPaths>
+			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
+		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
+		
+        <!--Sonar  plugins -->
+		<!-- Exclude POJOs code duplication analysis -->
+		<!-- 
+		<apache.commons.validator.version>1.7</apache.commons.validator.version>
+		-->
+		<git-code-format.version>3.1</git-code-format.version>
+		<git-commit-id.version>5.0.0</git-commit-id.version>
+		<surefire.version>3.0.0-M5</surefire.version>
+		<failsafe.version>3.0.0-M5</failsafe.version>
+		<jacoco-plugin.version>0.8.11</jacoco-plugin.version>
+		<pmd-plugin.version>3.15.0</pmd-plugin.version>
+		<spotbugs-plugin.version>4.5.2.0</spotbugs-plugin.version>
+		<sonar-plugin.version>5.5.0.6356</sonar-plugin.version>
 
     </properties>
 
@@ -105,7 +128,121 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven.compiler.plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+					<version>${surefire.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco-plugin.version}</version>
+				</plugin>
 			</plugins>
     	</pluginManagement>
     </build>
+    
+    
+    <profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<!-- plugins that need to be executed for all modules -->
+					<plugin>
+						<!-- jacoco agent needs to be prepared when building the
+						parent pom -->
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<!-- Plugin has an indirect dependency on an old version
+						os asm. This is disabled, so we
+              can use the asm version specified above. See:
+						https://issueexplorer.com/issue/pmd/pmd/3504#21570220 -->
+						<dependencies>
+							<dependency>
+								<groupId>org.eclipse.sisu</groupId>
+								<artifactId>org.eclipse.sisu.plexus</artifactId>
+								<version>0.0.0.M2a</version>
+								<exclusions>
+									<exclusion>
+										<groupId>asm</groupId>
+										<artifactId>asm</artifactId>
+									</exclusion>
+								</exclusions>
+							</dependency>
+						</dependencies>
+						<version>${pmd-plugin.version}</version>
+						<configuration>
+							<rulesets>
+								<ruleset>
+									https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-pmd-ruleset.xml</ruleset>
+							</rulesets>
+							<printFailingErrors>true</printFailingErrors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>aggregate</id>
+								<goals>
+									<goal>pmd</goal>
+								</goals>
+								<phase>verify</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs-maven-plugin</artifactId>
+						<version>${spotbugs-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>spotbugs</id>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<includeFilterFile>
+								https://raw.githubusercontent.com/europeana/api-commons/master/misc/rulesets/europeana-findbugs-ruleset.xml</includeFilterFile>
+							<!--We just want the reports; build should still pass -->
+							<failOnError>false</failOnError>
+							<!-- Import additional rules from plugins -->
+							<plugins>
+								<plugin>
+									<groupId>com.h3xstream.findsecbugs</groupId>
+									<artifactId>findsecbugs-plugin</artifactId>
+									<version>1.11.0</version>
+								</plugin>
+								<plugin>
+									<groupId>com.mebigfatguy.fb-contrib</groupId>
+									<artifactId>fb-contrib</artifactId>
+									<version>7.4.3.sb</version>
+								</plugin>
+							</plugins>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
