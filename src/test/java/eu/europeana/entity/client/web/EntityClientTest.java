@@ -1,24 +1,29 @@
 package eu.europeana.entity.client.web;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europeana.entity.client.EntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.EntityClientException;
+import eu.europeana.entitymanagement.definitions.model.Entity;
 import eu.europeana.entitymanagement.definitions.model.Organization;
 import eu.europeana.entitymanagement.vocabulary.EntityTypes;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.europeana.entitymanagement.definitions.model.Entity;
 
 /**
  * Test class to test the client
  * @author srishti singh
  * @since 10 march 2025
  */
+@TestInstance(Lifecycle.PER_CLASS)
 class EntityClientTest {
 
   EntityApi apiClient ;
@@ -27,7 +32,7 @@ class EntityClientTest {
    * This constructor will create a Entity api client based on values present in properties file.
    * @throws EntityClientException
    */
-  @BeforeEach
+  @BeforeAll
   void setup() throws EntityClientException {
     apiClient =  new EntityApiClient(new EntityClientConfiguration());
   }
@@ -40,7 +45,7 @@ class EntityClientTest {
   void testGetEntity_1() throws EntityClientException {
     Entity entity = apiClient.getEntity("http://data.europeana.eu/agent/61804");
     assertNotNull(entity);
-    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Agent.getEntityType(),  entity.getType());
   }
 
 
@@ -52,7 +57,7 @@ class EntityClientTest {
   void testGetEntity_2() throws EntityClientException {
     Entity entity = apiClient.getEntity("http://data.europeana.eu/organization/1482250000001710507");
     assertNotNull(entity);
-    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Organization.getEntityType(),  entity.getType());
     assertEquals("4385", StringUtils.substringAfterLast(entity.getEntityId(), "/"));
   }
 
@@ -67,7 +72,7 @@ class EntityClientTest {
   void testGetEntity_3() throws EntityClientException {
     Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
     assertNotNull(entity);
-    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Organization.getEntityType(),  entity.getType());
     assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
     assertNotNull(entity.getAggregatesFrom());
 
@@ -81,12 +86,12 @@ class EntityClientTest {
   void testGetEntity_4() throws EntityClientException {
     Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/713");
     assertNotNull(entity);
-    assertNotNull(entity.getType());
+    assertEquals(EntityTypes.Organization.getEntityType(),  entity.getType());
     assertEquals(EntityTypes.Organization.getEntityType(), entity.getType());
     // check address and has geo
     assertNotNull(entity.getAddress());
     assertNotNull(entity.getAddress().getVcardHasGeo());
-    assertNotNull(entity.getAddress().getVcardHasGeo().hasMetadataProperties());
+    assertTrue(entity.getAddress().getVcardHasGeo().hasMetadataProperties());
 
   }
 
@@ -99,7 +104,6 @@ class EntityClientTest {
   void testResolveEntity_1() throws EntityClientException {
     Entity entity = apiClient.resolveEntity("http://openlibrary.org/works/OL59188A").get(0);
     assertNotNull(entity);
-    assertNotNull(entity.getType());
     assertEquals(EntityTypes.Agent.getEntityType(), entity.getType());
   }
 
