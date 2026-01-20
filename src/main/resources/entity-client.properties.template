@@ -20,10 +20,10 @@ access_token=
 ## Client configuration properties (these are optional, should be included only if we want to create a custom client with these values)
 ## Also ClientConnectionConfig can be used to create a custom client
 
-entity.client.total.max.connection=
-entity.client.max.connection.per.route=
-entity.client.validate.after.inactivity=
-entity.client.time.to.live=
-entity.client.socket.timeout=
-entity.client.connection.request.timeout=
-entity.client.response.timeout=
+entity.client.total.max.connection=25
+entity.client.max.connection.per.route=5
+entity.client.validate.after.inactivity=5
+entity.client.time.to.live=60
+entity.client.socket.timeout=300
+entity.client.connection.request.timeout=30
+entity.client.response.timeout=60
