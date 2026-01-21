@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import static eu.europeana.entity.client.utils.EntityApiConstants.*;
 
 /**
  * Entity Client Api Connection class
@@ -58,9 +59,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
             if (response.getCode() == HttpStatus.SC_OK) {
                 List<String> entities = EntityClientUtils.getEntityApiResults(response.getBodyText());
                 if (entities != null) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("{} entities found for suggest text={}, lang={}, type={}", entities.size(), text, language, type);
-                    }
+                    LOGGER.debug("{} entities found for suggest text={}, lang={}, type={}", entities.size(), text, language, type);
                     return entities;
                 }
             }

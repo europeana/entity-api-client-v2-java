@@ -27,6 +27,16 @@ public class ClientConnectionConfig {
     public ClientConnectionConfig() {
     }
 
+    /**
+     * Constructor to instantiate ClientConnectionConfig
+     * @param totalMaxConnection totalMaxConnection value
+     * @param maxConnectionPerRoute maxConnectionPerRoute value
+     * @param validateAfterInactivity validateAfterInactivity value in seconds
+     * @param timeToLive timeToLive value in seconds
+     * @param socketTimeout socketTimeout value in seconds
+     * @param responseTimeout responseTimeout value in seconds
+     * @param connectionRequestTimeout connectionRequestTimeout value in seconds
+     */
     public ClientConnectionConfig(String totalMaxConnection, String maxConnectionPerRoute, String validateAfterInactivity,
                                   String timeToLive, String socketTimeout, String responseTimeout, String connectionRequestTimeout) {
         this.totalMaxConnection = totalMaxConnection;
@@ -94,6 +104,10 @@ public class ClientConnectionConfig {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
+    /**
+     * Checks if pooling connection property values are provided
+     * @return true
+     */
     public boolean hasPoolingConnMetadata() {
         return StringUtils.isNotBlank(this.totalMaxConnection) ||
                 StringUtils.isNotBlank(this.maxConnectionPerRoute) ||
@@ -101,10 +115,18 @@ public class ClientConnectionConfig {
                 StringUtils.isNotBlank(this.timeToLive) ;
     }
 
+    /**
+     * Checks if IO reactor property values are provided
+     * @return true
+     */
     public boolean hasIOReactorMetadata() {
         return StringUtils.isNotBlank(this.socketTimeout);
     }
 
+    /**
+     * Checks if Request config property values are provided
+     * @return true
+     */
     public boolean hasRequestConfigMetadata() {
         return StringUtils.isNotBlank(this.responseTimeout) ||
                 StringUtils.isNotBlank(this.connectionRequestTimeout);

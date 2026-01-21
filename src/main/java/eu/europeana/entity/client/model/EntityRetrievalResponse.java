@@ -4,6 +4,10 @@ import eu.europeana.entitymanagement.definitions.model.Entity;
 
 import java.util.List;
 
+/**
+ * Entity retrieval Response class
+ * @author Srishti singh
+ */
 public class EntityRetrievalResponse {
 
     private String context;

@@ -69,12 +69,7 @@
 		<sonar.java.spotbugs.reportPaths>
 			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
 		<sonar.cpd.exclusions>**/model/**/*</sonar.cpd.exclusions>
-		
-        <!--Sonar  plugins -->
-		<!-- Exclude POJOs code duplication analysis -->
-		<!-- 
-		<apache.commons.validator.version>1.7</apache.commons.validator.version>
-		-->
+
 		<git-code-format.version>3.1</git-code-format.version>
 		<git-commit-id.version>5.0.0</git-commit-id.version>
 		<surefire.version>3.0.0-M5</surefire.version>
