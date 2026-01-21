@@ -1,8 +1,8 @@
 package eu.europeana.entity.client.config;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -68,8 +68,8 @@ public class EntityClientConfiguration extends AuthenticationConfig {
   }
 
   void loadFromConfigFile(File externalConfigFile) {
-    try (FileInputStream input = new FileInputStream(externalConfigFile)) {
-      load(input);
+    try (InputStream is = java.nio.file.Files.newInputStream(externalConfigFile.toPath())) {
+      load(is);
     } catch (IOException e) {
       LOGGER.error("Error loading the properties config folder: {}", externalConfigFile.getName(), e);
     }

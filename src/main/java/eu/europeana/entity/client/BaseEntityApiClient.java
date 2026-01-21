@@ -52,7 +52,7 @@ public class BaseEntityApiClient {
         this.entityClientApiConnection = new EntityClientApiConnection(entityApiUrl, entityManagementUrl, auth);
     }
 
-    protected BaseEntityApiClient(EntityClientConfiguration config, ClientConnectionConfig connConfig) throws EntityClientException {
+    protected BaseEntityApiClient(EntityClientConfiguration config, ClientConnectionConfig connConfig) {
         this.entityClientApiConnection = new EntityClientApiConnection(config.getEntityApiUrl(), config.getEntityManagementUrl(),
                 AuthenticationBuilder.newAuthentication(config),
                 ConnectionConfigBuilder.buildPoolingConnection(config, connConfig),

@@ -23,7 +23,8 @@ public class BaseApiConnection extends EntityApiConstants {
 
     protected static final Logger LOGGER = LogManager.getLogger(BaseApiConnection.class);
 
-    protected static final String ERROR_MESSAGE = "Entity API Client call failed - ";
+    protected static final String ERROR_MESSAGE       = "Entity API Client call failed - ";
+    protected static final String INTERRUPTED_MESSAGE = "Interrupted!";
 
     protected final AsyncHttpConnection entityApiConnection;
     protected final AsyncHttpConnection entityManagementConnection;
@@ -101,7 +102,7 @@ public class BaseApiConnection extends EntityApiConstants {
             entityApiConnection.close();
             entityManagementConnection.close();
         } catch (IOException e) {
-            throw new EntityClientException("Error while closing the client connections... ");
+            throw new EntityClientException("Error while closing the client connections... ", -1,  e);
         }
     }
 }

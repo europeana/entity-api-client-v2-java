@@ -58,12 +58,18 @@ public class EntityClientApiConnection extends BaseApiConnection {
             if (response.getCode() == HttpStatus.SC_OK) {
                 List<String> entities = EntityClientUtils.getEntityApiResults(response.getBodyText());
                 if (entities != null) {
-                    LOGGER.debug("{} entities found for suggest text={}, lang={}, type={}", entities.size(), text, language, type);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("{} entities found for suggest text={}, lang={}, type={}", entities.size(), text, language, type);
+                    }
                     return entities;
                 }
             }
-        } catch (ExecutionException | InterruptedException | IOException e) {
+        } catch (ExecutionException | IOException e) {
            throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
         }
         LOGGER.debug("No entity found for suggest text={}, lang={}, type={}", text, language, type);
         return Collections.emptyList();
@@ -92,8 +98,12 @@ public class EntityClientApiConnection extends BaseApiConnection {
                     return Collections.singletonList("\"" + entityId + "\"");
                 }
             }
-        } catch (ExecutionException | InterruptedException | ProtocolException e) {
+        } catch (ExecutionException | ProtocolException e) {
             throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
         }
         LOGGER.debug("No entity found for resolve uri={}", uri);
         return Collections.emptyList();
@@ -120,8 +130,12 @@ public class EntityClientApiConnection extends BaseApiConnection {
                     return entities;
                 }
             }
-        } catch (ExecutionException | InterruptedException | IOException e) {
+        } catch (ExecutionException  | IOException e) {
             throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
         }
         LOGGER.debug("No entity found for enrich text={}, lang={}, type={}", text, language, type);
         return Collections.emptyList();
@@ -141,8 +155,12 @@ public class EntityClientApiConnection extends BaseApiConnection {
             if (response.getCode() == HttpStatus.SC_OK) {
                 return mapper.readValue(response.getBodyText(), Entity.class);
             }
-        } catch (ExecutionException | InterruptedException | IOException e) {
+        } catch (ExecutionException | IOException e) {
             throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
         }
         return null;
     }
@@ -165,8 +183,12 @@ public class EntityClientApiConnection extends BaseApiConnection {
             if (response.getCode() == HttpStatus.SC_OK) {
                 return mapper.readValue(response.getBodyText(), EntityRetrievalResponse.class).getItems();
             }
-        } catch (ExecutionException | InterruptedException | IOException e) {
+        } catch (ExecutionException | IOException e) {
             throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
         }
         return Collections.emptyList();
     }
