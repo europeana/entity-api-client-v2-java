@@ -193,6 +193,33 @@
     					</configuration>
     				</plugin>
 					
+					<!-- try failsafe for coverage data-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>${failsafe.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+
+						<!-- useModulePath = false Fixes Integration test not
+						finding beans. May
+							be
+					removed with 3.0.0-M6 is available
+                    See: https://stackoverflow.com/a/65806777/14530159 -->
+						<configuration>
+							<useModulePath>false</useModulePath>
+							<includes>
+            					<include>**/*Test.java</include>
+        					</includes>
+						</configuration>
+
+					</plugin>
 															
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
