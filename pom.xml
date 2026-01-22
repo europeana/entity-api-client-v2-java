@@ -59,12 +59,9 @@
         <sonar.organization>europeana</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.exclusions>**/*.gpg,**/*.template</sonar.exclusions>
-        <!-- 
-		SG: not needed in single project	
         <aggregate.report.xml>
-			target/site/jacoco-aggregate/jacoco.xml</aggregate.report.xml>
+			target/site/jacoco/jacoco.xml</aggregate.report.xml>
 		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.xml}</sonar.coverage.jacoco.xmlReportPaths>
-		-->
 		<sonar.java.pmd.reportPaths>${project.build.directory}/pmd.xml</sonar.java.pmd.reportPaths>
 		<sonar.java.spotbugs.reportPaths>
 			${project.build.directory}/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
@@ -171,8 +168,50 @@
 									<goal>prepare-agent</goal>
 								</goals>
 							</execution>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<!-- include the reports from all modules into the aggegated report (only in this module)-->
+								<configuration>
+									<dataFileIncludes>
+										<dataFileInclude>**/jacoco.exec</dataFileInclude>
+									</dataFileIncludes>
+									<outputDirectory>
+										${project.reporting.outputDirectory}/jacoco
+									</outputDirectory>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
+					
+					
+					<!-- plugins that need to be executed only on this module -->
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-plugin.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<!-- include the reports from exec into the xml report-->
+								<configuration>
+									<dataFileIncludes>
+										<dataFileInclude>**/jacoco.exec</dataFileInclude>
+									</dataFileIncludes>
+									<outputDirectory>
+										${project.reporting.outputDirectory}/jacoco-aggregate
+									</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					
+										
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-pmd-plugin</artifactId>
@@ -243,6 +282,7 @@
 							</plugins>
 						</configuration>
 					</plugin>
+					
 				</plugins>
 			</build>
 		</profile>
