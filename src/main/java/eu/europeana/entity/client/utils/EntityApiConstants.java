@@ -1,6 +1,16 @@
 package eu.europeana.entity.client.utils;
 
+/**
+ * Entity client constants class
+ */
 public class EntityApiConstants {
+
+    private EntityApiConstants() {
+        // hide implicit one
+    }
+
+    public static final String ENTITY_API_ENDPOINT_MISSING =  "Entity Api endpoint not provided !!!";
+    public static final String EM_API_ENDPOINT_MISSING     =  "Entity Management Api endpoint not provided !!!";
 
     public static final String BASE_URL = "http://data.europeana.eu";
     public static final String ENTITY_ID_BASE = "base";

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
 import eu.europeana.api.commons_sb3.http.AsyncHttpConnection;
 import eu.europeana.entity.client.exception.EntityClientException;
-import eu.europeana.entity.client.utils.EntityApiConstants;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 import org.apache.hc.core5.reactor.IOReactorConfig;
@@ -19,11 +18,12 @@ import java.io.IOException;
  * Base class for creating connection to the apis - entity api and entity management
  * @author srishti singh
  */
-public class BaseApiConnection extends EntityApiConstants {
+public class BaseApiConnection {
 
     protected static final Logger LOGGER = LogManager.getLogger(BaseApiConnection.class);
 
-    protected static final String ERROR_MESSAGE = "Entity API Client call failed - ";
+    protected static final String ERROR_MESSAGE       = "Entity API Client call failed - ";
+    protected static final String INTERRUPTED_MESSAGE = "Interrupted!";
 
     protected final AsyncHttpConnection entityApiConnection;
     protected final AsyncHttpConnection entityManagementConnection;
@@ -96,12 +96,16 @@ public class BaseApiConnection extends EntityApiConstants {
         return entityManagementConnection;
     }
 
+    /**
+     * Closes the Entity connections
+     * @throws EntityClientException
+     */
     public void close() throws EntityClientException {
         try {
             entityApiConnection.close();
             entityManagementConnection.close();
         } catch (IOException e) {
-            throw new EntityClientException("Error while closing the client connections... ");
+            throw new EntityClientException("Error while closing the client connections... ", -1,  e);
         }
     }
 }
