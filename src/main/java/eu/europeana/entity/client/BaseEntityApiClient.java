@@ -8,6 +8,13 @@ import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.connection.EntityClientApiConnection;
 import eu.europeana.entity.client.exception.EntityClientException;
 
+import static eu.europeana.entity.client.utils.EntityApiConstants.EM_API_ENDPOINT_MISSING;
+import static eu.europeana.entity.client.utils.EntityApiConstants.ENTITY_API_ENDPOINT_MISSING;
+
+/**
+ * Base Class for Entity Api Client
+ * @author Srishti singh
+ */
 public class BaseEntityApiClient {
 
     EntityClientApiConnection entityClientApiConnection;
@@ -22,10 +29,10 @@ public class BaseEntityApiClient {
      */
     protected BaseEntityApiClient(EntityClientConfiguration config) throws EntityClientException {
         if (config.getEntityApiUrl() == null) {
-            throw new EntityClientException(" Entity Api endpoint not provided !!!");
+            throw new EntityClientException(ENTITY_API_ENDPOINT_MISSING);
         }
         if (config.getEntityManagementUrl() == null) {
-            throw new EntityClientException(" Entity Management Api endpoint not provided !!!");
+            throw new EntityClientException(EM_API_ENDPOINT_MISSING);
         }
         this.entityClientApiConnection = new EntityClientApiConnection(config.getEntityApiUrl(),
                 config.getEntityManagementUrl(),
@@ -44,15 +51,21 @@ public class BaseEntityApiClient {
      */
     protected BaseEntityApiClient(String entityApiUrl, String entityManagementUrl, AuthenticationHandler auth) throws EntityClientException {
         if (entityApiUrl == null) {
-            throw new EntityClientException(" Entity Api endpoint not provided !!!");
+            throw new EntityClientException(ENTITY_API_ENDPOINT_MISSING);
         }
         if (entityManagementUrl == null) {
-            throw new EntityClientException(" Entity Management Api endpoint not provided !!!");
+            throw new EntityClientException(EM_API_ENDPOINT_MISSING);
         }
         this.entityClientApiConnection = new EntityClientApiConnection(entityApiUrl, entityManagementUrl, auth);
     }
 
     protected BaseEntityApiClient(EntityClientConfiguration config, ClientConnectionConfig connConfig) throws EntityClientException {
+        if (config.getEntityApiUrl() == null) {
+            throw new EntityClientException(ENTITY_API_ENDPOINT_MISSING);
+        }
+        if (config.getEntityManagementUrl() == null) {
+            throw new EntityClientException(EM_API_ENDPOINT_MISSING);
+        }
         this.entityClientApiConnection = new EntityClientApiConnection(config.getEntityApiUrl(), config.getEntityManagementUrl(),
                 AuthenticationBuilder.newAuthentication(config),
                 ConnectionConfigBuilder.buildPoolingConnection(config, connConfig),
@@ -60,12 +73,13 @@ public class BaseEntityApiClient {
                 ConnectionConfigBuilder.buildRequestConfig(config, connConfig));
     }
 
-    protected BaseEntityApiClient(String entityApiUrl, String entityManagementUrl, AuthenticationHandler auth, ClientConnectionConfig connConfig) throws EntityClientException {
+    protected BaseEntityApiClient(String entityApiUrl, String entityManagementUrl, AuthenticationHandler auth,
+                                  ClientConnectionConfig connConfig) throws EntityClientException {
         if (entityApiUrl == null) {
-            throw new EntityClientException(" Entity Api endpoint not provided !!!");
+            throw new EntityClientException(ENTITY_API_ENDPOINT_MISSING);
         }
         if (entityManagementUrl == null) {
-            throw new EntityClientException(" Entity Management Api endpoint not provided !!!");
+            throw new EntityClientException(EM_API_ENDPOINT_MISSING);
         }
         this.entityClientApiConnection = new EntityClientApiConnection(entityApiUrl, entityManagementUrl, auth,
                 ConnectionConfigBuilder.buildPoolingConnection(null, connConfig),
@@ -85,6 +99,10 @@ public class BaseEntityApiClient {
         return entityClientApiConnection;
     }
 
+    /**
+     * Close method to close the entityClientApiConnections - em and entity api
+     * @throws EntityClientException
+     */
     public void close() throws EntityClientException {
         this.entityClientApiConnection.close();
     }

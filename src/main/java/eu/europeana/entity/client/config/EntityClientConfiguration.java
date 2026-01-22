@@ -1,8 +1,8 @@
 package eu.europeana.entity.client.config;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,9 @@ public class EntityClientConfiguration extends AuthenticationConfig {
       "entity.client.connection.request.timeout";
   public static final String RESPONSE_TIMEOUT = "entity.client.response.timeout";
 
-
+  /**
+   * Constructor
+   */
   public EntityClientConfiguration() {
     super();
     loadProperties(PROPERTIES_FILE);
@@ -59,7 +61,7 @@ public class EntityClientConfiguration extends AuthenticationConfig {
     try {
       // try loading from classpath
       //ensure /
-      String classpathPropsFile = propertiesFile.startsWith("/")? propertiesFile : "/" + propertiesFile; 
+      String classpathPropsFile = (propertiesFile.startsWith("/") ? propertiesFile : "/" + propertiesFile);
       load(getClass().getResourceAsStream(classpathPropsFile));
 
     } catch (IOException e) {
@@ -68,10 +70,12 @@ public class EntityClientConfiguration extends AuthenticationConfig {
   }
 
   void loadFromConfigFile(File externalConfigFile) {
-    try (FileInputStream input = new FileInputStream(externalConfigFile)) {
-      load(input);
+    try (InputStream is = java.nio.file.Files.newInputStream(externalConfigFile.toPath())) {
+      load(is);
     } catch (IOException e) {
-      LOGGER.error("Error loading the properties config folder: {}", externalConfigFile.getName(), e);
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Error loading the properties config folder: {}", externalConfigFile.getName(), e);
+      }
     }
   }
 
@@ -112,6 +116,10 @@ public class EntityClientConfiguration extends AuthenticationConfig {
     return getProperty(RESPONSE_TIMEOUT);
   }
 
+  /**
+   * return the Integer value of the property requested
+   * @return value
+   */
   public int getConnectionConfigValue(String property) {
     String value = getProperty(property);
     if (StringUtils.isNotEmpty(value)) {
@@ -120,6 +128,10 @@ public class EntityClientConfiguration extends AuthenticationConfig {
     return 0;
   }
 
+  /**
+   * Checks if pooling connection property values are provided
+   * @return true
+   */
   public boolean hasPoolingConnMetadata() {
     return StringUtils.isNotBlank(getTotalMaxConnection())
         || StringUtils.isNotBlank(getMaxConnectionPerRoute())
@@ -127,10 +139,19 @@ public class EntityClientConfiguration extends AuthenticationConfig {
         || StringUtils.isNotBlank(getTimeToLive());
   }
 
+
+  /**
+   * Checks if IO reactor property values are provided
+   * @return true
+   */
   public boolean hasIOReactorMetadata() {
     return StringUtils.isNotBlank(getSocketTimeout());
   }
 
+  /**
+   * Checks if Request config property values are provided
+   * @return true
+   */
   public boolean hasRequestConfigMetadata() {
     return StringUtils.isNotBlank(getResponseTimeout())
         || StringUtils.isNotBlank(getConnectionRequestTimeout());

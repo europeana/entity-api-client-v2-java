@@ -20,6 +20,10 @@ import static eu.europeana.entity.client.config.EntityClientConfiguration.*;
  */
 public class ConnectionConfigBuilder {
 
+    private ConnectionConfigBuilder () {
+        // hide implicit one
+    }
+
     /**
      * Builds PoolingAsyncClientConnectionManager
      * @param config entity client configuration

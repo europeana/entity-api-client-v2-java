@@ -17,7 +17,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityClientUtils extends EntityApiConstants {
+import static eu.europeana.entity.client.utils.EntityApiConstants.*;
+
+/**
+ * Entity client utils class
+ */
+public class EntityClientUtils {
 
     private static final Logger LOGGER = LogManager.getLogger(EntityClientUtils.class);
     private static final ObjectMapper mapper = new ObjectMapper();
