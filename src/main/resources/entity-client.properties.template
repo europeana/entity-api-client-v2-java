@@ -27,3 +27,6 @@ entity.client.time.to.live=60
 entity.client.socket.timeout=300
 entity.client.connection.request.timeout=30
 entity.client.response.timeout=60
+
+## controls if Nagle's algorithm is enabled or disabled on a TCP socket.
+entity.client.tcp.no.delay=true

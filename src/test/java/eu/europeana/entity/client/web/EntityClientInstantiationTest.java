@@ -74,7 +74,7 @@ public class EntityClientInstantiationTest {
                 , new ApikeyBasedAuthentication("invalid_test"),
                 new ClientConnectionConfig("25", "5",
                         "5", "60", "300",
-                        "30", "60"));
+                        "30", "60", true));
 
         Assertions.assertNotNull(entityClientApi);
         Assertions.assertEquals(ApikeyBasedAuthentication.class, entityClientApi.getEntityClientApiConnection().getAuthenticationHandler().getClass());
@@ -109,7 +109,7 @@ public class EntityClientInstantiationTest {
         EntityApiClient entityClientApi =  new EntityApiClient(new EntityClientConfiguration(properties),
                 new ClientConnectionConfig("25", "5",
                 "5", "60", "300",
-                "30", "60"));
+                "30", "60", false));
 
         Assertions.assertNotNull(entityClientApi);
         Assertions.assertEquals(ApikeyBasedAuthentication.class, entityClientApi.getEntityClientApiConnection().getAuthenticationHandler().getClass());

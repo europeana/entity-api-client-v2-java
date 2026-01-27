@@ -34,6 +34,8 @@ public class EntityClientConfiguration extends AuthenticationConfig {
   public static final String CONNECTION_REQUEST_TIMEOUT =
       "entity.client.connection.request.timeout";
   public static final String RESPONSE_TIMEOUT = "entity.client.response.timeout";
+  public static final String TCP_NO_DELAY = "entity.client.tcp.no.delay";
+
 
   /**
    * Constructor
@@ -115,6 +117,11 @@ public class EntityClientConfiguration extends AuthenticationConfig {
   public String getResponseTimeout() {
     return getProperty(RESPONSE_TIMEOUT);
   }
+
+  public boolean getTcpNoDelay() {
+    return Boolean.parseBoolean(getProperty(TCP_NO_DELAY));
+  }
+
 
   /**
    * return the Integer value of the property requested

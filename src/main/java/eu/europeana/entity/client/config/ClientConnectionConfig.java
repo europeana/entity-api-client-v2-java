@@ -24,6 +24,8 @@ public class ClientConnectionConfig {
 
     private String connectionRequestTimeout;
 
+    private boolean tcpNoDelay;
+
     public ClientConnectionConfig() {
     }
 
@@ -38,7 +40,8 @@ public class ClientConnectionConfig {
      * @param connectionRequestTimeout connectionRequestTimeout value in seconds
      */
     public ClientConnectionConfig(String totalMaxConnection, String maxConnectionPerRoute, String validateAfterInactivity,
-                                  String timeToLive, String socketTimeout, String responseTimeout, String connectionRequestTimeout) {
+                                  String timeToLive, String socketTimeout, String responseTimeout, String connectionRequestTimeout,
+                                  boolean tcpNoDelay) {
         this.totalMaxConnection = totalMaxConnection;
         this.maxConnectionPerRoute = maxConnectionPerRoute;
         this.validateAfterInactivity = validateAfterInactivity;
@@ -46,6 +49,7 @@ public class ClientConnectionConfig {
         this.socketTimeout = socketTimeout;
         this.responseTimeout = responseTimeout;
         this.connectionRequestTimeout = connectionRequestTimeout;
+        this.tcpNoDelay = tcpNoDelay;
     }
 
     public int getTotalMaxConnection() {
@@ -104,6 +108,10 @@ public class ClientConnectionConfig {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
+    public boolean getTcpNoDelay() {
+        return tcpNoDelay;
+    }
+
     /**
      * Checks if pooling connection property values are provided
      * @return true
@@ -120,7 +128,9 @@ public class ClientConnectionConfig {
      * @return true
      */
     public boolean hasIOReactorMetadata() {
-        return StringUtils.isNotBlank(this.socketTimeout);
+        return StringUtils.isNotBlank(this.socketTimeout)
+                || this.tcpNoDelay;
+
     }
 
     /**
