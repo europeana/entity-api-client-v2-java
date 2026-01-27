@@ -66,11 +66,15 @@ public class ConnectionConfigBuilder {
         if (config != null && config.hasIOReactorMetadata()) {
             return IOReactorConfig.custom()
                     .setSoTimeout(Timeout.of(config.getConnectionConfigValue(SOCKET_TIMEOUT), TimeUnit.SECONDS))
+                    .setTcpNoDelay(config.getTcpNoDelay())
+                    .setSoKeepAlive(true)
                     .build();
         }
         if (connConfig != null && connConfig.hasIOReactorMetadata()) {
             return IOReactorConfig.custom()
                     .setSoTimeout(Timeout.of(connConfig.getSocketTimeout(), TimeUnit.SECONDS))
+                    .setTcpNoDelay(connConfig.getTcpNoDelay())
+                    .setSoKeepAlive(true)
                     .build();
         }
         return IOReactorConfig.custom().build(); // default
