@@ -1,0 +1,32 @@
+#Entity Management Base Url for Entity Retrieval
+entity.management.url=
+
+#Entity Api V2 url for search and suggest
+entity.api.url=
+
+## Authentication endpoints ( @See eu.europeana.api.commons_sb3.auth#AuthenticationConfig )
+
+## url and params for generating a Long Lasting token that refresh itself.
+token_endpoint=
+grant_params=
+
+# Apikey to access the client. Generates the Apikey Based Authentication.
+apikey=
+
+# for generating static token for the client to use. Only pass the token value (without Bearer)
+access_token=
+
+
+## Client configuration properties (these are optional, should be included only if we want to create a custom client with these values)
+## Also ClientConnectionConfig can be used to create a custom client
+
+entity.client.total.max.connection=25
+entity.client.max.connection.per.route=5
+entity.client.validate.after.inactivity=5
+entity.client.time.to.live=60
+entity.client.socket.timeout=300
+entity.client.connection.request.timeout=30
+entity.client.response.timeout=60
+
+## controls if Nagle's algorithm is enabled or disabled on a TCP socket.
+entity.client.tcp.no.delay=true
