@@ -28,6 +28,9 @@ jobs:
           #provide the secret to decrypt script
           SECRET_PROPS_PASSPHRASE: ${{ secrets.CLIENT_PROPS_PASS }}
       - name: Build, run tests and analyse
+        # projectKey should match the <groupId>:<artifactId> of the project (see pom.xml).
+        # As jenkins artifactory job will push the project based on <groupId>:<artifactId>
+        # and if GitHub actions will push a new project in sonar cloud if they don't match
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=eu.europeana.api:entity-api-client
         env:
           # Needed to get some information about the pull request, if any
