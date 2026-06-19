@@ -1,9 +1,13 @@
 package eu.europeana.entity.client.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europeana.api.commons.definitions.search.enrich.EnrichQuery;
+import eu.europeana.api.commons.definitions.search.enrich.EnrichRequest;
 import eu.europeana.entity.client.exception.EntityClientException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
@@ -16,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static eu.europeana.entity.client.utils.EntityApiConstants.*;
 
@@ -25,7 +30,7 @@ import static eu.europeana.entity.client.utils.EntityApiConstants.*;
 public class EntityClientUtils {
 
     private static final Logger LOGGER = LogManager.getLogger(EntityClientUtils.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = buildMapper();
 
     private EntityClientUtils() {
         // to hide implicit one
@@ -98,6 +103,21 @@ public class EntityClientUtils {
         }
     }
 
+    public static String buildEnrichRequest(String type, Map<String, String> textLangMap, int rows) throws EntityClientException {
+        if (textLangMap == null || textLangMap.isEmpty()) {
+            throw new EntityClientException("No values provided for enrichment request");
+        }
+        try {
+            List<EnrichQuery> query = new ArrayList<>();
+            for (Map.Entry<String, String> entry : textLangMap.entrySet()) {
+                query.add(new EnrichQuery(entry.getKey(), entry.getValue()));
+            }
+            return mapper.writeValueAsString(new EnrichRequest(type, query, rows));
+        } catch (JsonProcessingException e) {
+            throw new EntityClientException("Error creating enrich request " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        }
+    }
+
 
     /**
      * Builds the Entity Api resolve url
@@ -167,5 +187,29 @@ public class EntityClientUtils {
             }
         }
         return entities;
+    }
+
+    /**
+     * Extracts an error message from the given JSON response string.
+     *
+     * @param response the JSON response string to parse for an error message
+     * @return the extracted error message if available, or an empty string if the parsing fails
+     */
+    public static String getErrorMessage(String response) {
+        try {
+            return mapper.readTree(response).get("message").asText();
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Error while parsing the response", e);
+        }
+        return "";
+    }
+
+    private static ObjectMapper buildMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        mapper.registerModule(module);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.findAndRegisterModules();
+        return mapper;
     }
 }

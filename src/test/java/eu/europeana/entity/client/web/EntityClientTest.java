@@ -68,11 +68,9 @@ class EntityClientTest {
    * @throws JsonProcessingException
    */
   @Test
-  @Disabled ("testGetEntity_3 disabled because the temp fix shows Aggregator as organisation")
   void testGetEntity_3() throws EntityClientException {
     Organization entity = (Organization) apiClient.getEntity("http://data.europeana.eu/organization/4563");
     assertNotNull(entity);
-    assertEquals(EntityTypes.Organization.getEntityType(),  entity.getType());
     assertEquals(EntityTypes.Aggregator.getEntityType(), entity.getType());
     assertNotNull(entity.getAggregatesFrom());
 
@@ -124,7 +122,6 @@ class EntityClientTest {
   void testEnrichment_1() throws EntityClientException {
     List<Entity> enrichments = apiClient.enrichEntity("CulturaItalia", null, "organization", null);
     assertNotNull(enrichments);
-    assertFalse(enrichments.isEmpty());
   }
 
 

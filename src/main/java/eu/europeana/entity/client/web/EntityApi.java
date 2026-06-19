@@ -5,6 +5,7 @@ import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTyp
 import eu.europeana.entitymanagement.definitions.model.Entity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Entity client api interface
@@ -30,6 +31,14 @@ public interface EntityApi {
      * @param rows
      */
     public List<Entity> enrichEntity(String text, String lang, String type, String rows) throws EntityClientException;
+
+    /**
+     * This method returns entity enrichment depending on given text, types and language.
+     * @param type
+     * @param textLangMap
+     * @param rows
+     */
+    public List<Entity> enrichEntity(String type, Map<String, String> textLangMap, int rows) throws EntityClientException;
 
     /**
      * Get Entity by EntityId

@@ -13,13 +13,16 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ProtocolException;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import static eu.europeana.entity.client.utils.EntityApiConstants.*;
 
@@ -137,6 +140,48 @@ public class EntityClientApiConnection extends BaseApiConnection {
             Thread.currentThread().interrupt();
         }
         LOGGER.debug("No entity found for enrich text={}, lang={}, type={}", text, language, type);
+        return Collections.emptyList();
+    }
+
+    /**
+     * Entity Enrichment retrieval
+     * @param textLangMap text lang map for entity enrich
+     * @param type type of entity
+     * @param rows rows
+     * @return lis of entity ids
+     * @throws EntityClientException throws if there is an error in post request or reading the response
+     */
+    public List<String> retrieveEnrichment(String type, Map<String, String> textLangMap, int rows) throws EntityClientException{
+        try {
+            URI enrichUrl = new URIBuilder(entityApiUri + PATH_SEPERATOR + ENRICH_PATH).build();
+            String jsonBody = EntityClientUtils.buildEnrichRequest(type, textLangMap, rows);
+            LOGGER.debug("{} ",jsonBody);
+
+            SimpleHttpResponse response = entityApiConnection.post(
+                    enrichUrl.toString(),
+                    jsonBody,
+                    ContentType.APPLICATION_JSON.getMimeType(),
+                    this.auth);
+
+            if (response.getCode() == HttpStatus.SC_OK) {
+                List<String> entities = EntityClientUtils.getEntityApiResults(response.getBodyText());
+                if (entities != null) {
+                    LOGGER.debug("{} entities found for enrich text/lang={}, type={}", entities.size(), textLangMap, type);
+                    return entities;
+                }
+            } else {
+                LOGGER.error("Error in enrichment response {}", response.getBodyText());
+            }
+        }  catch (URISyntaxException e) {
+            throw  new EntityClientException("Error creating enrich Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (ExecutionException  | IOException e) {
+            throw new EntityClientException(ERROR_MESSAGE + e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
+        } catch (InterruptedException e) { // the interrupted state is restored
+            LOGGER.warn(INTERRUPTED_MESSAGE, e);
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
+        }
+        LOGGER.debug("No entity found for enrich text/lang: {}, type={}", textLangMap, type);
         return Collections.emptyList();
     }
 
