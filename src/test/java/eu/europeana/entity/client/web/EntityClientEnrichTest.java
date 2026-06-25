@@ -53,7 +53,7 @@ public class EntityClientEnrichTest {
      */
     @Test
     public void testEnrichment_2() throws EntityClientException {
-        List<Entity> enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", "en"), 0);
+        List<Entity> enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", "en"), -1);
         assertTrue(enrichments.isEmpty());
 
         enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", "en"), 60);
