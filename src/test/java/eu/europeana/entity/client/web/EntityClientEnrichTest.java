@@ -62,14 +62,12 @@ public class EntityClientEnrichTest {
 
     /**
      * Test scenario - empty rows or zero rows
-     *                Enrichments results should be present as the default value of rows is 10
      * @throws EntityClientException
      */
     @Test
     public void testEnrichment_3() throws EntityClientException {
         List<Entity> enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", "en"), 0);
-        assertNotNull(enrichments);
-        assertEquals(EntityTypes.Place.getEntityType(), enrichments.get(0).getType());
+        assertTrue(enrichments.isEmpty());
     }
 
     /**
@@ -78,12 +76,12 @@ public class EntityClientEnrichTest {
      */
     @Test
     public void testEnrichment_4() throws EntityClientException {
-        List<Entity> enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", null), 0);
+        List<Entity> enrichments = apiClient.enrichEntity("place", Collections.singletonMap("paris", null), 10);
         assertNotNull(enrichments);
         assertEquals(EntityTypes.Place.getEntityType(), enrichments.get(0).getType());
         assertTrue(StringUtils.contains(enrichments.get(0).getEntityId(), "place/41488"));
 
-        enrichments = apiClient.enrichEntity("agent", Collections.singletonMap("paris", ""), 0);
+        enrichments = apiClient.enrichEntity("agent", Collections.singletonMap("paris", ""), 10);
         assertNotNull(enrichments);
         assertEquals(EntityTypes.Agent.getEntityType(), enrichments.get(0).getType());
         assertTrue(StringUtils.contains(enrichments.get(0).getEntityId(), "agent/52295"));
@@ -95,19 +93,12 @@ public class EntityClientEnrichTest {
      */
     @Test
     public void testEnrichment_5() throws EntityClientException {
-        List<Entity> enrichments = apiClient.enrichEntity("", Collections.singletonMap("paris", ""), 0);
-        assertNotNull(enrichments);
-        assertEquals(2, enrichments.size());
-
-        assertEquals(EntityTypes.Place.getEntityType(), enrichments.get(0).getType());
-        assertTrue(StringUtils.contains(enrichments.get(0).getEntityId(), "place/41488"));
-
-        assertEquals(EntityTypes.Agent.getEntityType(), enrichments.get(1).getType());
-        assertTrue(StringUtils.contains(enrichments.get(1).getEntityId(), "agent/52295"));
+        List<Entity> enrichments = apiClient.enrichEntity("", Collections.singletonMap("paris", ""), 10);
+        assertTrue(enrichments.isEmpty());
     }
 
     /**
-     * Test scenario - multiple values
+     * Test scenario - multiple values and type all
      * @throws EntityClientException
      */
     @Test
@@ -116,7 +107,7 @@ public class EntityClientEnrichTest {
         map.put("paris", "en");
         map.put("India", null);
         map.put("France", "fr");
-        List<Entity> enrichments = apiClient.enrichEntity("", map, 0);
+        List<Entity> enrichments = apiClient.enrichEntity("all", map, 10);
         assertNotNull(enrichments);
         assertEquals(7, enrichments.size());
     }
