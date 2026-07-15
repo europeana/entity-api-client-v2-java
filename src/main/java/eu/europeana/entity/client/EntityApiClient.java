@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Entity Api Client
@@ -79,6 +80,12 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
     @Override
     public List<Entity> enrichEntity(String text, String lang, String type, String rows) throws EntityClientException {
         List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(text, lang, type, rows);
+        return getMetadata(enrichResults);
+    }
+
+    @Override
+    public List<Entity> enrichEntity(String type, Map<String, String> textLangMap, int rows) throws EntityClientException {
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, textLangMap, rows);
         return getMetadata(enrichResults);
     }
 
