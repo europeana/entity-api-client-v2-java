@@ -36,18 +36,19 @@ public class EntityClientUtils {
         // to hide implicit one
     }
 
+
     /**
-     * Builds the Entity Api suggest url
-     * @param url suggest url
-     * @param text text for entity suggest
-     * @param language language
-     * @param scope scope of the suggest
-     * @param type type of entity
-     * @param rows number of rows
-     * @param algorithm algorithm for entity suggest
-     * @return list of entity ids found
-     * @return URI for entity suggest
-     * @throws EntityClientException is there is an uri error
+     * Constructs a URI for the suggestion API with the specified query parameters.
+     *
+     * @param url the base URL for the suggestion API
+     * @param text the input text to generate suggestions for
+     * @param language the language of the input text; can be null
+     * @param scope the scope of the suggestions; can be null
+     * @param type the type of suggestions to retrieve; can be null
+     * @param rows the maximum number of suggestion rows to retrieve; can be null
+     * @param algorithm the algorithm to use for generating suggestions; can be null
+     * @return a URI representing the suggestion API request with the specified parameters
+     * @throws EntityClientException if there is an error during URI construction
      */
     public static URI buildSuggestUrl(String url, String text, String language, String scope,
                                       String type, String rows, String algorithm) throws EntityClientException {
@@ -76,13 +77,15 @@ public class EntityClientUtils {
     }
 
     /**
+     * Builds the Entity Enrich API URL using the provided parameters.
      *
-     * @param url entity enrich url
-     * @param text text for entity suggest
-     * @param type type of entity
-     * @param rows number of rows
-     * @return Entity enrich url
-     * @throws EntityClientException is there is an uri error
+     * @param url the base URL for the Entity Enrich API
+     * @param text the text to be enriched
+     * @param lang the language of the text; can be null
+     * @param type the type of enrichment; can be null
+     * @param rows the number of rows to retrieve; can be null
+     * @return a URI object representing the constructed Enrich API URL
+     * @throws EntityClientException if there is an error creating the URI
      */
     public static URI buildEntityEnrichUrl(String url, String text, String lang, String type, String rows) throws EntityClientException {
         try {
@@ -103,12 +106,21 @@ public class EntityClientUtils {
         }
     }
 
+    /**
+     * Constructs a JSON string for an enrichment request based on the given parameters.
+     *
+     * @param type the type of entity for the enrichment request
+     * @param textLangMap a map where keys are texts to be enriched and values are their respective language codes
+     * @param rows the number of rows to be included in the response
+     * @return a JSON string representation of the enrichment request
+     * @throws EntityClientException if the input map is null, empty, or if JSON processing fails
+     */
     public static String buildEnrichRequest(String type, Map<String, String> textLangMap, int rows) throws EntityClientException {
         if (textLangMap == null || textLangMap.isEmpty()) {
             throw new EntityClientException("No values provided for enrichment request");
         }
         try {
-            List<EnrichQuery> query = new ArrayList<>();
+            List<EnrichQuery> query = new ArrayList<>(textLangMap.size());
             for (Map.Entry<String, String> entry : textLangMap.entrySet()) {
                 query.add(new EnrichQuery(entry.getKey(), entry.getValue()));
             }
@@ -120,11 +132,12 @@ public class EntityClientUtils {
 
 
     /**
-     * Builds the Entity Api resolve url
-     * @param enityUrl entity Resolve Url
-     * @param resolveUri the uri to be resolved
-     * @return Entity resolve url
-     * @throws EntityClientException is there is an uri error
+     * Constructs a URI for resolving an entity using the provided base URL and resolve URI parameter.
+     *
+     * @param enityUrl the base URL for the entity resolve endpoint
+     * @param resolveUri the URI parameter to resolve the entity
+     * @return a URI object representing the constructed resolve URL
+     * @throws EntityClientException if there is an error during URI construction
      */
     public static URI buildEntityResolveUrl(String enityUrl, String resolveUri) throws EntityClientException {
         try {
@@ -137,9 +150,11 @@ public class EntityClientUtils {
     }
 
     /**
-     * Builds the Entity management entity retrieval url
-     * @param path Entity retrieval url
-     * @throws EntityClientException is there is an uri error
+     * Builds a URI for entity retrieval based on the given path.
+     *
+     * @param path the input string representing the path to be used for building the URI
+     * @return a URI object constructed from the given path
+     * @throws EntityClientException if there is an error during URI construction, such as an invalid path
      */
     public static URI buildEntityRetrievalUrl(String path) throws EntityClientException {
         try {
@@ -151,21 +166,22 @@ public class EntityClientUtils {
     }
 
     /**
-     * Builds the Entity retrieval url from entityId
+     * Extracts the entity retrieval ID from the given ID by removing the base URL prefix.
      * id : http://data.europeana.eu/<type>/<id>
      * extracts : /<type>/<id>
-     * @param id
-     * @return
+     * @param id the full identifier string containing the base URL and the entity-specific ID
+     * @return the entity retrieval ID, which is the portion of the input ID after the base URL
      */
     public static String getEntityRetrievalId(String id) {
        return StringUtils.substringAfter(id, BASE_URL);
     }
 
     /**
-     * Returns List of ids from suggest results
-     * @param json json output
-     * @return list of entity ids
-     * @throws JsonProcessingException if there is an error while processing json
+     * Parses the provided JSON string to extract entity IDs from the API results.
+     *
+     * @param json the JSON string representing the API response, which contains entity data and metadata
+     * @return a list of entity IDs extracted from the JSON response
+     * @throws JsonProcessingException if an error occurs while parsing the JSON string
      */
     public static List<String> getEntityApiResults(String json) throws JsonProcessingException {
         List<String> entities = new ArrayList<>();
@@ -180,7 +196,7 @@ public class EntityClientUtils {
                     }
                 }
                 // fail-safe check
-                if (total != entities.size()) {
+                if (total != entities.size() && LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Mismatch while parsing the suggest results. Entities in suggest Results = {}, Entities collected={}",
                             total, entities.size());
                 }
@@ -190,10 +206,12 @@ public class EntityClientUtils {
     }
 
     /**
-     * Extracts an error message from the given JSON response string.
+     * Extracts the error message from a JSON response string.
      *
-     * @param response the JSON response string to parse for an error message
-     * @return the extracted error message if available, or an empty string if the parsing fails
+     * @param response the JSON string response, which is expected to contain an error message
+     *                 under the key "message"
+     * @return the extracted error message as a string; returns an empty string if parsing fails
+     *         or if the "message" key is not found
      */
     public static String getErrorMessage(String response) {
         try {

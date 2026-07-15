@@ -170,7 +170,9 @@ public class EntityClientApiConnection extends BaseApiConnection {
                     return entities;
                 }
             } else {
-                LOGGER.error("Error in enrichment response {}", response.getBodyText());
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("Error in enrichment response {}", response.getBodyText());
+                }
             }
         }  catch (URISyntaxException e) {
             throw  new EntityClientException("Error creating enrich Urls " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
