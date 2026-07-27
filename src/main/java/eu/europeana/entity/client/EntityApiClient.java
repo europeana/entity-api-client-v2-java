@@ -1,6 +1,7 @@
 package eu.europeana.entity.client;
 
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.config.ClientConnectionConfig;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.EntityClientException;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Entity Api Client
@@ -85,7 +87,40 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
 
     @Override
     public List<Entity> enrichEntity(String type, Map<String, String> textLangMap, int rows) throws EntityClientException {
-        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, textLangMap, rows);
+        List<LanguageText> list = textLangMap.entrySet()
+                .stream()
+                .map(e -> new LanguageText(
+                        e.getKey(),
+                        e.getValue()))
+                .toList();
+
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, list, rows);
+        return getMetadata(enrichResults);
+    }
+
+    @Override
+    public List<Entity> enrichEntity(String type, String text, int rows) throws EntityClientException {
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(
+                type,
+                List.of(new LanguageText(text, null)),
+                rows);
+        return getMetadata(enrichResults);    }
+
+    @Override
+    public List<Entity> enrichEntity(String type, String text, String lang, int rows) throws EntityClientException {
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, List.of(new LanguageText(text, lang)), rows);
+        return getMetadata(enrichResults);
+    }
+
+    @Override
+    public List<Entity> enrichEntity(String type, LanguageText text, int rows) throws EntityClientException {
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, List.of(text), rows);
+        return getMetadata(enrichResults);
+    }
+
+    @Override
+    public List<Entity> enrichEntity(String type, List<LanguageText> textList, int rows) throws EntityClientException {
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, textList, rows);
         return getMetadata(enrichResults);
     }
 

@@ -1,5 +1,6 @@
 package eu.europeana.entity.client.web;
 
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.EntityApiClient;
 import eu.europeana.entity.client.config.EntityClientConfiguration;
 import eu.europeana.entity.client.exception.EntityClientException;
@@ -10,10 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +40,7 @@ public class EntityClientEnrichTest {
     @Test
     public void testEnrichment_1() {
         EntityClientException exception = assertThrows(EntityClientException.class, () ->
-                apiClient.enrichEntity("place", null, 0));
+                apiClient.enrichEntity("place", null, null, 0));
 
         assertEquals("No values provided for enrichment request", exception.getMessage());
     }
@@ -111,5 +109,47 @@ public class EntityClientEnrichTest {
         assertNotNull(enrichments);
         assertEquals(7, enrichments.size());
     }
+
+    // test different methods
+    @Test
+    public void testEnrichment_7() throws EntityClientException {
+        List<Entity> enrichments = apiClient.enrichEntity("place", "france", null, 10);
+        assertNotNull(enrichments);
+        assertEquals(2, enrichments.size());
+    }
+
+    @Test
+    public void testEnrichment_8() throws EntityClientException {
+        List<Entity> enrichments = apiClient.enrichEntity("place", "france", 10);
+        assertNotNull(enrichments);
+        assertEquals(2, enrichments.size());
+    }
+
+
+    @Test
+    public void testEnrichment_9() throws EntityClientException {
+        List<Entity> enrichments = apiClient.enrichEntity("place", new LanguageText("france", null), 10);
+        assertNotNull(enrichments);
+        assertEquals(2, enrichments.size());
+
+        enrichments = apiClient.enrichEntity("place", new LanguageText("france", "fr"), 10);
+        assertNotNull(enrichments);
+        assertEquals(1, enrichments.size());
+    }
+
+    @Test
+    public void testEnrichment_10() throws EntityClientException {
+        List<LanguageText> textList = new ArrayList<>(3);
+
+        textList.add(new LanguageText("paris", "en"));
+        textList.add(new LanguageText("India", null));
+        textList.add(new LanguageText("France", "fr"));
+
+        List<Entity> enrichments = apiClient.enrichEntity("all", textList, 10);
+        assertNotNull(enrichments);
+        assertEquals(7, enrichments.size());
+    }
+
+
 
 }
