@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.exception.EntityClientException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
@@ -20,7 +21,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static eu.europeana.entity.client.utils.EntityApiConstants.*;
 
@@ -107,29 +107,43 @@ public class EntityClientUtils {
     }
 
     /**
-     * Constructs a JSON string for an enrichment request based on the given parameters.
+     * Constructs an enrichment request by serializing the provided data into a JSON string.
      *
-     * @param type the type of entity for the enrichment request
-     * @param textLangMap a map where keys are texts to be enriched and values are their respective language codes
-     * @param rows the number of rows to be included in the response
-     * @return a JSON string representation of the enrichment request
-     * @throws EntityClientException if the input map is null, empty, or if JSON processing fails
+     * @param type the type of the enrichment to perform
+     * @param textList a list of {@code LanguageText} objects containing the text to be enriched
+     * @param rows the number of rows or results to retrieve from the enrichment API
+     * @return a JSON string representing the enrichment request
+     * @throws EntityClientException if validation of the {@code textList} fails, or if an error occurs
+     *         during the serialization process
      */
-    public static String buildEnrichRequest(String type, Map<String, String> textLangMap, int rows) throws EntityClientException {
-        if (textLangMap == null || textLangMap.isEmpty()) {
-            throw new EntityClientException("No values provided for enrichment request");
-        }
+    public static String buildEnrichRequest(String type, List<LanguageText> textList, int rows) throws EntityClientException {
         try {
-            List<EnrichQuery> query = new ArrayList<>(textLangMap.size());
-            for (Map.Entry<String, String> entry : textLangMap.entrySet()) {
-                query.add(new EnrichQuery(entry.getKey(), entry.getValue()));
-            }
-            return mapper.writeValueAsString(new EnrichRequest(type, query, rows));
+            validateLanguageText(textList);
+            return mapper.writeValueAsString(new EnrichRequest(type, textList, rows));
         } catch (JsonProcessingException e) {
             throw new EntityClientException("Error creating enrich request " +e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e);
         }
     }
 
+    /**
+     * Validates the provided list of LanguageText objects to ensure that it is non-null,
+     * non-empty, and that all language texts contain valid text values.
+     *
+     * @param textList the list of LanguageText objects to validate
+     * @throws EntityClientException if the list is null, empty, or contains any LanguageText
+     *         objects with a null text value
+     */
+    private static void validateLanguageText(List<LanguageText> textList) throws EntityClientException{
+        if (textList == null || textList.isEmpty()) {
+            throw new EntityClientException("No values provided for enrichment request");
+        }
+        for (LanguageText languageText : textList) {
+            if (languageText != null
+                    && languageText.text() == null) {
+                throw new EntityClientException("No values provided for enrichment request");
+            }
+        }
+    }
 
     /**
      * Constructs a URI for resolving an entity using the provided base URL and resolve URI parameter.
@@ -226,6 +240,7 @@ public class EntityClientUtils {
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         mapper.registerModule(module);
+        mapper.registerModule(new Jdk8Module()); // for the optional support for jdk8+
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.findAndRegisterModules();
         return mapper;

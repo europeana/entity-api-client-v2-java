@@ -1,5 +1,6 @@
 package eu.europeana.entity.client.web;
 
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entitymanagement.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entitymanagement.definitions.model.Entity;
@@ -56,6 +57,62 @@ public interface EntityApi {
      *                               or issues with the remote service
      */
      List<Entity> enrichEntity(String type, Map<String, String> textLangMap, int rows) throws EntityClientException;
+
+
+    /**
+     * Enriches entities based on the provided entity type, input text, and the number of rows to process.
+     * This method processes the given inputs to fetch and enrich a list of entities.
+     *
+     * @param type the type of entities to enrich (e.g., "agent", "organization", "place")
+     * @param text the text input to be analyzed and used for entity enrichment
+     * @param rows the maximum number of entities to retrieve and process
+     * @return a list of enriched {@code Entity} objects based on the provided inputs
+     * @throws EntityClientException if an error occurs during the enrichment process, such as invalid input
+     *                               or issues encountered with a remote service
+     */
+    List<Entity> enrichEntity(String type, String text, int rows) throws EntityClientException;
+
+    /**
+     * Enriches entities based on the provided entity type, input text, language, and the number of rows to process.
+     * This method utilizes the specified inputs to fetch and enrich a list of entities.
+     *
+     * @param type the type of entities to enrich (e.g., "agent", "organization", "place")
+     * @param text the text input to be analyzed and enriched
+     * @param lang the language of the input text, represented as a language code (e.g., "en", "fr")
+     * @param rows the maximum number of entities to retrieve and process
+     * @return a list of enriched {@code Entity} objects based on the provided inputs
+     * @throws EntityClientException if an error occurs during the enrichment process, such as invalid input
+     *                               or issues encountered with a remote service
+     */
+    List<Entity> enrichEntity(String type, String text, String lang, int rows) throws EntityClientException;
+
+    /**
+     * Enriches entities based on the provided type, language-specific text, and the number of rows to process.
+     * This method utilizes the specified inputs to retrieve and enrich a list of entities.
+     *
+     * @param type the type of entities to enrich (e.g., "agent", "organization", "place")
+     * @param text the language-specific text to be used for entity enrichment, represented as a {@code LanguageText} object
+     * @param rows the maximum number of entities to retrieve and process
+     * @return a list of enriched {@code Entity} objects based on the provided inputs
+     * @throws EntityClientException if an error occurs during the enrichment process, such as invalid input
+     *                               or issues encountered with a remote service
+     */
+    List<Entity> enrichEntity(String type, LanguageText text, int rows) throws EntityClientException;
+
+    /**
+     * Enriches entities based on the provided entity type, a list of language-specific text,
+     * and the number of rows to process. This method uses the specified inputs to retrieve
+     * and enrich a list of entities.
+     *
+     * @param type the type of entities to enrich (e.g., "agent", "organization", "place")
+     * @param textList the list of {@code LanguageText} objects containing language-specific text
+     *                 to be used for entity enrichment
+     * @param rows the maximum number of entities to retrieve and process
+     * @return a list of enriched {@code Entity} objects based on the provided inputs
+     * @throws EntityClientException if an error occurs during the enrichment process, such as
+     *                               invalid input or issues with the remote service
+     */
+    List<Entity> enrichEntity(String type, List<LanguageText> textList, int rows) throws EntityClientException;
 
     /**
      * Retrieves an entity based on the provided entity ID.
