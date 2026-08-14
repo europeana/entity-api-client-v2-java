@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
 import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.exception.EntityClientException;
@@ -239,6 +240,7 @@ public class EntityClientUtils {
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         mapper.registerModule(module);
+        mapper.registerModule(new Jdk8Module()); // for the optional support for jdk8+
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.findAndRegisterModules();
         return mapper;

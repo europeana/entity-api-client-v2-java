@@ -91,7 +91,7 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
                 .stream()
                 .map(e -> new LanguageText(
                         e.getKey(),
-                        e.getValue()))
+                        Optional.ofNullable(e.getValue())))
                 .toList();
 
         List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, list, rows);
@@ -108,7 +108,10 @@ public class EntityApiClient extends BaseEntityApiClient implements EntityApi {
 
     @Override
     public List<Entity> enrichEntity(String type, String text, String lang, int rows) throws EntityClientException {
-        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, List.of(new LanguageText(text, lang)), rows);
+        List<String> enrichResults = getEntityClientApiConnection().retrieveEnrichment(type, List.of(new LanguageText(
+                text,
+                Optional.ofNullable(lang))),
+                rows);
         return getMetadata(enrichResults);
     }
 

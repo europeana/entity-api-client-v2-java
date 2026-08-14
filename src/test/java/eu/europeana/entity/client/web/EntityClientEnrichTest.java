@@ -115,14 +115,14 @@ public class EntityClientEnrichTest {
     public void testEnrichment_7() throws EntityClientException {
         List<Entity> enrichments = apiClient.enrichEntity("place", "france", null, 10);
         assertNotNull(enrichments);
-        assertEquals(2, enrichments.size());
+        assertEquals(1, enrichments.size());
     }
 
     @Test
     public void testEnrichment_8() throws EntityClientException {
         List<Entity> enrichments = apiClient.enrichEntity("place", "france", 10);
         assertNotNull(enrichments);
-        assertEquals(2, enrichments.size());
+        assertEquals(1, enrichments.size());
     }
 
 
@@ -130,9 +130,9 @@ public class EntityClientEnrichTest {
     public void testEnrichment_9() throws EntityClientException {
         List<Entity> enrichments = apiClient.enrichEntity("place", new LanguageText("france", null), 10);
         assertNotNull(enrichments);
-        assertEquals(2, enrichments.size());
+        assertEquals(1, enrichments.size());
 
-        enrichments = apiClient.enrichEntity("place", new LanguageText("france", "fr"), 10);
+        enrichments = apiClient.enrichEntity("place", new LanguageText("france", Optional.of("fr")), 10);
         assertNotNull(enrichments);
         assertEquals(1, enrichments.size());
     }
@@ -141,9 +141,9 @@ public class EntityClientEnrichTest {
     public void testEnrichment_10() throws EntityClientException {
         List<LanguageText> textList = new ArrayList<>(3);
 
-        textList.add(new LanguageText("paris", "en"));
+        textList.add(new LanguageText("paris", Optional.of("en")));
         textList.add(new LanguageText("India", null));
-        textList.add(new LanguageText("France", "fr"));
+        textList.add(new LanguageText("France", Optional.of("fr")));
 
         List<Entity> enrichments = apiClient.enrichEntity("all", textList, 10);
         assertNotNull(enrichments);
