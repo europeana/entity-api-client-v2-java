@@ -1,6 +1,7 @@
 package eu.europeana.entity.client.connection;
 
 import eu.europeana.api.commons_sb3.auth.AuthenticationHandler;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.client.exception.EntityClientException;
 import eu.europeana.entity.client.model.EntityRetrievalResponse;
 import eu.europeana.entity.client.utils.EntityClientUtils;
@@ -151,10 +152,10 @@ public class EntityClientApiConnection extends BaseApiConnection {
      * @return lis of entity ids
      * @throws EntityClientException throws if there is an error in post request or reading the response
      */
-    public List<String> retrieveEnrichment(String type, Map<String, String> textLangMap, int rows) throws EntityClientException{
+    public List<String> retrieveEnrichment(String type, List<LanguageText> textList, int rows) throws EntityClientException{
         try {
             URI enrichUrl = new URIBuilder(entityApiUri + PATH_SEPERATOR + ENRICH_PATH).build();
-            String jsonBody = EntityClientUtils.buildEnrichRequest(type, textLangMap, rows);
+            String jsonBody = EntityClientUtils.buildEnrichRequest(type, textList, rows);
             LOGGER.debug("{} ",jsonBody);
 
             SimpleHttpResponse response = entityApiConnection.post(
@@ -166,7 +167,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
             if (response.getCode() == HttpStatus.SC_OK) {
                 List<String> entities = EntityClientUtils.getEntityApiResults(response.getBodyText());
                 if (entities != null) {
-                    LOGGER.debug("{} entities found for enrich text/lang={}, type={}", entities.size(), textLangMap, type);
+                    LOGGER.debug("{} entities found for enrich text/lang={}, type={}", entities.size(), textList, type);
                     return entities;
                 }
             } else {
@@ -183,7 +184,7 @@ public class EntityClientApiConnection extends BaseApiConnection {
             /* Clean up whatever needs to be handled before interrupting  */
             Thread.currentThread().interrupt();
         }
-        LOGGER.debug("No entity found for enrich text/lang: {}, type={}", textLangMap, type);
+        LOGGER.debug("No entity found for enrich text/lang: {}, type={}", textList, type);
         return Collections.emptyList();
     }
 
